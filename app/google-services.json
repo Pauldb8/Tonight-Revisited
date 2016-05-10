@@ -1,0 +1,101 @@
+{
+  "project_info": {
+    "project_id": "tonight-c9666",
+    "project_number": "326447200515",
+    "name": "Tonight"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326447200515:android:ec8b5e4d486884c2",
+        "client_id": "android:com.example.android.tonight",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.example.android.tonight",
+          "certificate_hash": []
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "326447200515-9i87n1d3oddfqadmjrkdkdug7pal8qlc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.tonight",
+            "certificate_hash": "75E4BBBBDA17CAA6BCAAE84184745E43B1C896B0"
+          }
+        },
+        {
+          "client_id": "326447200515-qnl7lqt629b2pe8kfcg6imti6lafobdn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326447200515:android:914d0dd360314437",
+        "client_id": "android:info.debuck.tonight",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "info.debuck.tonight",
+          "certificate_hash": []
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "326447200515-gcm097puc7k3gg0h17dc1519jeungh5h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.debuck.tonight",
+            "certificate_hash": "1D20909745A885A5F3700AECA450C231A4AED38E"
+          }
+        },
+        {
+          "client_id": "326447200515-qnl7lqt629b2pe8kfcg6imti6lafobdn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}
