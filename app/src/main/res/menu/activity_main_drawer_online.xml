@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_disconnect"
-            android:icon="@drawable/ic_lock"
-            android:title="@string/drawer_disconnect" />
-    </group>
-
-    <item android:title="@string/menu_drawer_params">
-        <menu>
             <item
                 android:id="@+id/nav_profile"
                 android:icon="@drawable/ic_account_box"
@@ -22,7 +13,12 @@
                 android:id="@+id/nav_event_created"
                 android:icon="@drawable/ic_event"
                 android:title="@string/menu_drawer_events_created" />
-        </menu>
-    </item>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_disconnect"
+            android:icon="@drawable/ic_lock"
+            android:title="@string/drawer_disconnect" />
+    </group>
 
 </menu>

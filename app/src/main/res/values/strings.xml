@@ -33,7 +33,7 @@
     <string name="drawer_disconnect">Se déconnecter</string>
     <string name="title_activity_profile">Mon profil</string>
     <string name="menu_drawer_params">Paramètres</string>
-    <string name="menu_drawer_events">Évènement où je participe</string>
+    <string name="menu_drawer_events">Mes inscriptions</string>
     <string name="menu_drawer_profile">Mon compte</string>
     <string name="main_error_not_connected">Vous n\'êtes pas connecté. Connectez-vous pour créer un
         évènement.</string>
@@ -74,10 +74,11 @@
     <string name="is_subscribe_event_url">http://debuck.info/tonight/isSubscribed.php</string>
     <string name="add_event_illimited_people">Participants illimité</string>
     <string name="subscribed_event_activity_label">Mes inscriptions</string>
-    <string name="menu_drawer_events_created">Évènements que j\'ai crée</string>
+    <string name="menu_drawer_events_created">Mes créations</string>
     <string name="created_event_activity_label">Évènements que j\'ai crées</string>
     <string name="title_activity_profile_and_friends">Mon compte</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="profile_tab_profile">Mon profil</string>
     <string name="profile_tab_friends">Mes amis</string>
+    <string name="empty_text">Il n\'y rien à voir ici.</string>
 </resources>

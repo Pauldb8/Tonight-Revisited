@@ -37,6 +37,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     private TextView evDescription;
     private TextView evSubscribe;
     private TextView evUnsubscribe;
+    private TextView evCategory;
     private ViewSwitcher viewSwitcher;
 
     /* TonightEvent properties */
@@ -68,6 +69,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         evSubscribe = (TextView) findViewById(R.id.subscribe);
         evUnsubscribe = (TextView) findViewById(R.id.unsubscribe);
         viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher);
+        evCategory = (TextView) findViewById(R.id.evCategory);
 
         /* Getting the serialized TonightEvent object from the intent extra and creating an instance
         * of TonightEvent from it */
@@ -87,6 +89,8 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         evStartTime.setText(event.getStartHour());
         //todo: evLocation.setText(event.get);
         evDescription.setText(Html.fromHtml(refactorText(event.getDescription())));
+        evLocation.setText(event.getEvent_location_id());
+        evCategory.setText(event.getEvent_type_id());
 
         /* Adding click listeners */
         evSubscribe.setOnClickListener(this);

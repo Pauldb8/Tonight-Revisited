@@ -27,12 +27,16 @@
         android:background="@color/colorPrimaryDark"
         android:elevation="4dp">
 
-        <ImageView
+        <com.pkmmte.view.CircularImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:id="@+id/profile_picture"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_profile_picture"/>
+            android:src="@drawable/creator"
+            app:border="true"
+            app:border_color="#EEEEEE"
+            app:border_width="2dp"
+            app:shadow="true"
+            android:layout_gravity="center_horizontal" />
 
         <TextView
             android:layout_width="wrap_content"

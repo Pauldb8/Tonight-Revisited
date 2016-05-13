@@ -18,10 +18,11 @@ public class CreatedEventActivity extends AppCompatActivity implements AdapterVi
         /* Getting the listview to where to show them */
         mainListView = (ListView) findViewById(R.id.mainListView);
         mainListView.setOnItemClickListener(this);
+        mainListView.setEmptyView(findViewById(R.id.empty_view));
 
         /* Get subscribed event */
         getEventToView getEventAsyncTask = new getEventToView(this, mainListView,
-                getEventToView.REQUEST_ALL_EVENT);
+                getEventToView.REQUEST_CREATED_EVENT);
         getEventAsyncTask.execute();
     }
 

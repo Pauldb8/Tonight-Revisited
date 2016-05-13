@@ -118,7 +118,7 @@
                         <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:text="Sam 21 juin 2015"
+                            android:text="Choisissez la date"
                             android:id="@+id/addStartDate"
                             android:textColor="@color/primary_text"
                             android:gravity="center_vertical" />
@@ -144,7 +144,7 @@
                         <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:text="FREE"
+                            android:text="Choisissez le prix"
                             android:id="@+id/addPrice"
                             android:textColor="@color/primary_text"
                             android:gravity="center_vertical" />
@@ -271,7 +271,7 @@
                         <AutoCompleteTextView
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Rue du jardin, 1348 Louvain-La-Neuve, Belgique"
+                            android:hint="Entrez l&apos;adresse"
                             android:id="@+id/addPosition"
                             android:textColor="@color/primary_text"
                             android:gravity="center_vertical"
@@ -345,12 +345,14 @@
                             android:layout_weight="1"
                             android:enabled="true"
                             android:hint="@string/add_event_max_people"
+                            android:textSize="14dp"
                             android:visibility="gone" />
 
                         <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:text="@string/add_event_illimited_people"
+                            android:textSize="14dp"
                             android:id="@+id/add_ev_tvMaxPeople"
                             android:textColor="@color/primary_text"
                             android:gravity="center_vertical" />

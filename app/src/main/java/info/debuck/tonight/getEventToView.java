@@ -56,8 +56,13 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
                 finalRequestURL += "tonight/getEvents.php";
                 break;
             case REQUEST_SUBSCRIBED_EVENT:
-                finalRequestURL += "tonight/getSubscribedEvent.php?id="
+                finalRequestURL += "tonight/getSubscribedEvents.php?id="
                 + NetworkSingleton.getInstance(mContext).getConnectedUSer().getId();
+                break;
+            case REQUEST_CREATED_EVENT:
+                finalRequestURL += "tonight/getCreatedEvents.php?id="
+                        + NetworkSingleton.getInstance(mContext).getConnectedUSer().getId();
+                break;
             default:
                 finalRequestURL += "tonight/getEvents.php";
                 break;
@@ -79,12 +84,17 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
                 TonightEvent[].class, new Response.Listener<TonightEvent[]>() {
             @Override
             public void onResponse(TonightEvent[] response) {
-                Log.i("getEventToView", "Received: " + response[response.length-1].toString());
+                if(response != null) {
+                    Log.i("getEventToView", "Received: " + response[response.length - 1].toString());
+                    eventArray = new ArrayList<TonightEvent>(Arrays.asList(response));
+                    /* we have received the events so we set the adapter to the view */
+                    mAdapter = new EventCustomAdapter(mContext, eventArray);
+                    mView.setAdapter(mAdapter);
+                }
+                else {
+                    Log.i("getEventToView", "Received: null array, showing empty");
+                }
 
-                /* we have received the events so we set the adapter to the view */
-                eventArray = new ArrayList<TonightEvent>(Arrays.asList(response));
-                mAdapter = new EventCustomAdapter(mContext, eventArray);
-                mView.setAdapter(mAdapter);
             }
         }, new Response.ErrorListener() {
 

@@ -21,10 +21,11 @@ public class SubscribedEventActivity extends AppCompatActivity implements Adapte
         /* Getting the listview to where to show them */
         mainListView = (ListView) findViewById(R.id.mainListView);
         mainListView.setOnItemClickListener(this);
+        mainListView.setEmptyView(findViewById(R.id.empty_view));
 
         /* Get subscribed event */
         getEventToView getEventAsyncTask = new getEventToView(this, mainListView,
-                getEventToView.REQUEST_ALL_EVENT);
+                getEventToView.REQUEST_SUBSCRIBED_EVENT);
         getEventAsyncTask.execute();
     }
 
@@ -36,9 +37,6 @@ public class SubscribedEventActivity extends AppCompatActivity implements Adapte
         String serializedObject = NetworkSingleton.getInstance(this).getGson().toJson(clickedEvent);
         //Log.i("Test", serializedObject);
         openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
-        getEventToView getEventAsyncTask = new getEventToView(this, mainListView,
-                getEventToView.REQUEST_SUBSCRIBED_EVENT);
-        getEventAsyncTask.execute();
-        //startActivity(openDetail);
+        startActivity(openDetail);
     }
 }
