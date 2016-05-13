@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import info.debuck.tonight.EventClass.EventCategory;
 import info.debuck.tonight.EventClass.User;
 
 /**
@@ -39,10 +40,13 @@ public class NetworkSingleton {
     private DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); /* for formatting */
     private User connectedUSer;
 
+    private EventCategory eventCategory;
+
     private NetworkSingleton(Context context){
         this.mCtx = context;
         mRequestQueue = getRequestQueue(); /* Assigning the queue */
         mGson = getGson(); /* Assigning the Gson */
+
 
         /* Creating a cache String - Bitmap of 20 allocation */
         mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
@@ -59,6 +63,9 @@ public class NetworkSingleton {
                 cache.put(url, bitmap);
             }
         });
+
+        /* Caching the eventcategory for whole program accessibility */
+        eventCategory = new EventCategory(mCtx);
     }
 
     public static synchronized NetworkSingleton getInstance(Context context) {
@@ -136,5 +143,10 @@ public class NetworkSingleton {
             Log.e("ERROR", "Could not parse datetime: " + dateString);
             return null;
         }
+    }
+
+    /* This function returns the Eventategory class accessible */
+    public EventCategory getEventCategory() {
+        return eventCategory;
     }
 }

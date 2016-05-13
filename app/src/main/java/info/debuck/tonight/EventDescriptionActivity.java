@@ -1,5 +1,7 @@
 package info.debuck.tonight;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -19,6 +21,7 @@ import com.google.gson.Gson;
 import info.debuck.tonight.EventClass.IsSubscribedRequest;
 import info.debuck.tonight.EventClass.SubscriptionRequest;
 import info.debuck.tonight.EventClass.TonightEvent;
+import info.debuck.tonight.EventClass.TonightEventForeignKeys;
 import info.debuck.tonight.EventClass.TonightRequest;
 import info.debuck.tonight.Tools.GsonRequest;
 import info.debuck.tonight.Tools.SessionManager;
@@ -44,6 +47,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     private Gson gson;
     private String serializedObject;
     private TonightEvent event;
+    private TonightEventForeignKeys eventFK;
 
     /* Network Singleton information */
     private ImageLoader mImageLoader;
@@ -76,10 +80,34 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         gson = NetworkSingleton.getInstance(this).getGson();
         serializedObject = getIntent().getStringExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC);
         event = gson.fromJson(serializedObject, TonightEvent.class);
+        /* Get the foreign keys of the event thanks to a volley request */
+        GsonRequest<TonightEventForeignKeys> fkrequest = new GsonRequest<TonightEventForeignKeys>(
+                getString(R.string.url_event_foreign_keys) + "?id=" + event.get_ID(),
+                TonightEventForeignKeys.class,
+                new Response.Listener<TonightEventForeignKeys>() {
+                    @Override
+                    public void onResponse(TonightEventForeignKeys response) {
+                        eventFK = response;
+                        evLocation.setText(eventFK.getAddress());
+                        evCategory.setText(NetworkSingleton.getInstance(getApplicationContext())
+                                .getEventCategory().getCategoryName(eventFK.getCategory()));
+                        Log.i("EDA", "received FKeys");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("EDA", "Did NOT receive FKeys" + error.getMessage());
+                    }
+                }, this);
+
 
         /* Getting the loader information from Network Singleton */
         mImageLoader = NetworkSingleton.getInstance(this.getApplicationContext()).getImageLoader();
         mRequestQueue = NetworkSingleton.getInstance(this).getRequestQueue();
+
+        /* Adding the request to the request queue */
+        mRequestQueue.add(fkrequest);
 
         /* Associating information from the event object to its respective views */
         evDescPicture.setImageUrl(event.getPicture_url(), mImageLoader);
@@ -89,12 +117,11 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         evStartTime.setText(event.getStartHour());
         //todo: evLocation.setText(event.get);
         evDescription.setText(Html.fromHtml(refactorText(event.getDescription())));
-        evLocation.setText(event.getEvent_location_id());
-        evCategory.setText(event.getEvent_type_id());
 
         /* Adding click listeners */
         evSubscribe.setOnClickListener(this);
         evUnsubscribe.setOnClickListener(this);
+        evLocation.setOnClickListener(this);
         showSubscribeOrUnsubscribe();
     }
 
@@ -198,6 +225,12 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
                             Toast.LENGTH_LONG);
                 }
                 break;
+            case R.id.evLocation:
+                // Search for restaurants in San Francisco
+                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + eventFK.getAddress());
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                startActivity(mapIntent);
+                    break;
         }
     }
 

@@ -81,4 +81,14 @@
     <string name="profile_tab_profile">Mon profil</string>
     <string name="profile_tab_friends">Mes amis</string>
     <string name="empty_text">Il n\'y rien à voir ici.</string>
+    <string name="url_event_foreign_keys">http://debuck.info/tonight/getForeignKeysEvent.php</string>
+    <string name="event_category_cultural">Culturel</string>
+    <string name="event_category_music">Musique</string>
+    <string name="event_category_workshop">Atelier</string>
+    <string name="event_category_nightlife">Soirée</string>
+    <string name="event_category_bar">Bar / Restaurant</string>
+    <string name="event_category_festival">Festival</string>
+    <string name="event_category_meeting">Réunion</string>
+    <string name="event_category_other">Autre</string>
+    <string name="login_instruction">Entrez vos information de connexion.</string>
 </resources>
