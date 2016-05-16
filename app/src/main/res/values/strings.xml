@@ -91,4 +91,20 @@
     <string name="event_category_meeting">Réunion</string>
     <string name="event_category_other">Autre</string>
     <string name="login_instruction">Entrez vos information de connexion.</string>
+    <string name="register_user_email_taken">Cette adresse email est déjà utilisée.</string>
+    <string name="add_event_created">Votre évènement a été créé.</string>
+    <string name="add_event_not_created">Votre évènement n\'a pas pu être créé.</string>
+    <string name="ev_desc_express_yourself">Exprimez-vous</string>
+    <string name="send">Envoyer</string>
+    <string name="login_authenticated">Vous êtes connecté en tant que</string>
+    <string name="login_error">Erreur de connexion.</string>
+    <string name="user_profile_anonymous">Anonyme</string>
+    <string name="user_profile_user">Utilisateur</string>
+    <string name="user_profile_enterprise">Entreprise</string>
+    <string name="user_profile_administrator">Administrateur</string>
+    <string name="add_event_post_empty">Veuillez écrire un message à envoyer.</string>
+    <string name="add_event_post_url">http://debuck.info/tonight/addPostToEvent.php</string>
+    <string name="event_detail_post_added">Votre message a été posté.</string>
+    <string name="get_user_url">http://debuck.info/tonight/getUser.php</string>
+    <string name="add_event_post_error_posting">Impossible d\'envoyer ce message.</string>
 </resources>

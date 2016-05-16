@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.google.gson.Gson;
+import com.pkmmte.view.CircularImageView;
 
 import info.debuck.tonight.EventClass.TonightEvent;
 import info.debuck.tonight.EventClass.User;
@@ -114,9 +115,13 @@ public class MainActivity extends AppCompatActivity
             View header = navigationView.getHeaderView(0);
 
             TextView a = ((TextView) header.findViewById(R.id.user_name));
-            a.setText(user.getName());
+            a.setText(user.getFullName());
+            a.setOnClickListener(this);
             TextView b = ((TextView) header.findViewById(R.id.user_email));
             b.setText(user.getEmail());
+            b.setOnClickListener(this);
+            CircularImageView c = (CircularImageView) header.findViewById(R.id.user_picture);
+            c.setOnClickListener(this);
             //Toast.makeText(this, user.toString(), Toast.LENGTH_LONG).show();
         }
         else { //User is signing out
@@ -237,6 +242,11 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, getString(R.string.main_error_not_connected), Toast.LENGTH_LONG)
                         .show();
             }
+        }
+
+        /* We clicked on our profile name email or picture, we send the user to the profile page */
+        if(id == R.id.user_name || id == R.id.user_email || id == R.id.user_picture){
+            startActivity(new Intent(this, ProfileAndFriendsActivity.class));
         }
     }
 

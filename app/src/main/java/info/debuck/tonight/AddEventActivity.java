@@ -496,7 +496,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         String today = dateFormat.format(cal.getTime()); //2014/08/06 16:00:22
 
         /* Creating the TonightEvent */
-        TonightEvent event = new TonightEvent(0,
+        final TonightEvent event = new TonightEvent(0,
                 tvTitle.getText().toString(),
                 start_date,
                 end_date,
@@ -510,7 +510,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                 1, /* 1 = open, 2 = private, 3 = canceled etc.. */
                 evLocationId);//The id returned from the previous request
 
-        Log.i("EventObject", NetworkSingleton.getInstance(this).getGson().toJson(event).toString());
+        //Log.i("EventObject", NetworkSingleton.getInstance(this).getGson().toJson(event).toString());
 
         /* Preparing the Volley Request for TonightEvent */
         String uploadEvent = getResources().getString(R.string.uploadEventURL);
@@ -526,7 +526,8 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
 
 
         /* This will create the event, we will have to add it to the queue */
-         GsonRequest<TonightRequest> addEvent = new GsonRequest<TonightRequest>(
+        final JSONObject finalEventJSON = eventJSON;
+        GsonRequest<TonightRequest> addEvent = new GsonRequest<TonightRequest>(
                 GsonRequest.Method.POST,
                 uploadEvent,
                 TonightRequest.class,
@@ -537,15 +538,23 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                         boolean statusReturn = response.isStatusReturn();
                         //Log.i("statusReturn", "" + response.getStatusCode());
                         if (statusReturn) {
-                            Toast.makeText(getApplicationContext(), NetworkSingleton.getInstance(
-                                    getApplicationContext()).getGson().toJson(response).toString(),
+                            Toast.makeText(getApplicationContext(),
+                                    getString(R.string.add_event_created),
                                     Toast.LENGTH_LONG).show();
                             Log.i("addEvent", NetworkSingleton.getInstance(
                                     getApplicationContext()).getGson().toJson(response).toString());
+                            /* we finish the creation activity */
+                            finish();
+                            /* And we start the detail view of the created event */
+                            Intent openDetail =
+                                    new Intent(getApplicationContext(), EventDescriptionActivity.class);
+                            String serializedObject = finalEventJSON.toString();
+                            //Log.i("Test", serializedObject);
+                            openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
+                            startActivity(openDetail);
                         }
                         else{
-                            Toast.makeText(getApplicationContext(), NetworkSingleton.getInstance(
-                                    getApplicationContext()).getGson().toJson(response).toString(),
+                            Toast.makeText(getApplicationContext(), getString(R.string.add_event_not_created),
                                     Toast.LENGTH_LONG).show();
                             Log.i("addEvent", NetworkSingleton.getInstance(
                                     getApplicationContext()).getGson().toJson(response).toString());

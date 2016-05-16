@@ -328,7 +328,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         result.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_LOGIN, gson.toJson(response));
                         // Create intent to deliver some kind of result data
                         setResult(Activity.RESULT_OK, result);
+                        Toast.makeText(getApplicationContext(), getString(R.string.login_authenticated)
+                                + " " + response.getName() + " " + response.getLastName()
+                                , Toast.LENGTH_LONG).show();
                         finish();
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), getString(R.string.login_error)
+                                , Toast.LENGTH_LONG).show();
                     }
                 }
             }, new Response.ErrorListener() {
