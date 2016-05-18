@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         /* Starting the NetworkSingleton for unique use with Volley downloader */
         RequestQueue requestQueue = NetworkSingleton.getInstance(this)
                 .getRequestQueue();
-        requestQueue.start();
+         requestQueue.start();
         mImageLoader = NetworkSingleton.getInstance(this).getImageLoader();
 
         /* See if we need to update the drawer when the user is connected for this session */
