@@ -10,6 +10,7 @@ import info.debuck.tonight.MainActivity;
 
 /**
  * Created by Paul Debuck on 14-05-16.
+ *
  */
 public class SplashScreen extends AppCompatActivity {
 
