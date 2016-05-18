@@ -15,6 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import info.debuck.tonight.EventClass.User;
+import info.debuck.tonight.EventClass.UserProfile;
 
 public class ProfileAndFriendsActivity extends AppCompatActivity {
 
@@ -27,6 +31,12 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    private User mUser;
+
+    private TextView tvEmail;
+
+    TabLayout tabLayout;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -49,7 +59,7 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -67,9 +77,12 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 if(tab.getPosition() == 0){
                     fab.hide();
+                    mViewPager.setCurrentItem(tab.getPosition());
                 }
-                else
+                else {
                     fab.show();
+                    mViewPager.setCurrentItem(tab.getPosition());
+                }
             }
 
             @Override
@@ -85,7 +98,7 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
     }
 
 
-    @Override
+       @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_profile_and_friends, menu);
@@ -116,6 +129,13 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private User mUser;
+        private UserProfile mUserProfile;
+
+        /* Views */
+        private TextView tvProfileName;
+        private TextView tvProfileEmail;
+        private TextView tvProfileProfile;
 
         public PlaceholderFragment() {
         }
@@ -141,6 +161,12 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
             switch(chosenView){
                 case 1:
                     rootView = inflater.inflate(R.layout.content_profile, container, false);
+                    /** Setting the views */
+                    mUser = NetworkSingleton.getInstance(getActivity().getApplicationContext())
+                            .getConnectedUSer();
+                    mUserProfile = NetworkSingleton.getInstance(getActivity().getApplicationContext())
+                            .getUserProfile();
+                    setupViews(mUser, mUserProfile, rootView);
                     break;
                 case 2:
                     rootView = inflater.inflate(R.layout.content_profile, container, false);
@@ -150,6 +176,21 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
             }
 
             return rootView;
+        }
+
+        /**
+         * This methods places the information from the user in their corresponding position on the view
+         * @param mUser : the connected user class
+         * @param mUserProfile
+         */
+        private void setupViews(User mUser, UserProfile mUserProfile, View rootView) {
+            tvProfileName = (TextView) rootView.findViewById(R.id.profile_name);
+            tvProfileEmail = (TextView) rootView.findViewById(R.id.profile_email);
+            tvProfileProfile = (TextView) rootView.findViewById(R.id.profile_profile);
+
+            tvProfileName.setText(mUser.getFullName());
+            tvProfileProfile.setText(mUserProfile.getUserProfile(""+mUser.getProfile_id()));
+            tvProfileEmail.setText(mUser.getEmail());
         }
     }
 

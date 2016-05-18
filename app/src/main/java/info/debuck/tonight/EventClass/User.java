@@ -64,4 +64,14 @@ public class User {
     public String toString(){
         return this.name + ": " + this.email;
     }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFullName() { return this.name + " " + this.lastName; }
 }

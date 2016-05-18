@@ -239,25 +239,33 @@ public class SubscribeActivity extends AppCompatActivity{
                     postParams, new Response.Listener<User>() {
                 @Override
                 public void onResponse(User response) {
-                    Log.i("RegisterUserTask", "Received: " + response.toString());
+                    if(response != null) {
+                        Log.i("RegisterUserTask", "Received: " + response.toString());
 
-                /*  We received the user so we log him in */
-                    SessionManager sessionManager = new SessionManager(getApplicationContext());
-                    sessionManager.createLoginSession(response);
-                    NetworkSingleton.getInstance(getApplicationContext()).setConnectedUSer(response);
-                    //updateDrawerInfo(null);
-                    Toast.makeText(getApplicationContext(), getApplicationContext()
-                            .getString(R.string.auth_subscribe_success),
-                            Toast.LENGTH_LONG).show();
-                    //We redirect him to his profile page
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                    /*  We received the user so we log him in */
+                        SessionManager sessionManager = new SessionManager(getApplicationContext());
+                        sessionManager.createLoginSession(response);
+                        NetworkSingleton.getInstance(getApplicationContext()).setConnectedUSer(response);
+                        //updateDrawerInfo(null);
+                        Toast.makeText(getApplicationContext(), getApplicationContext()
+                                        .getString(R.string.auth_subscribe_success),
+                                Toast.LENGTH_LONG).show();
+                        //We redirect him to his profile page
+                        finish();
+                        startActivity(new Intent(getApplicationContext(), ProfileAndFriendsActivity.class));
+                    }else {
+                        Log.i("RegisterUserTask", "Received: ERROR");
+                        tvEmail.setError(getString(R.string.register_user_email_taken));
+                        tvEmail.requestFocus();
+                    }
                 }
             }, new Response.ErrorListener() {
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.i("RegisterUserTask", "Received: ERROR");
+                    tvEmail.setError(getString(R.string.register_user_email_taken));
+                    tvEmail.requestFocus();
                 }
             }, getApplicationContext());
 

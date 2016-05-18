@@ -27,6 +27,7 @@ import java.util.Date;
 
 import info.debuck.tonight.EventClass.EventCategory;
 import info.debuck.tonight.EventClass.User;
+import info.debuck.tonight.EventClass.UserProfile;
 
 /**
  * This singleton creates a unique RequestQueue for use with Volley downloading
@@ -41,6 +42,7 @@ public class NetworkSingleton {
     private User connectedUSer;
 
     private EventCategory eventCategory;
+    private UserProfile userProfile;
 
     private NetworkSingleton(Context context){
         this.mCtx = context;
@@ -66,6 +68,8 @@ public class NetworkSingleton {
 
         /* Caching the eventcategory for whole program accessibility */
         eventCategory = new EventCategory(mCtx);
+        /* Caching the userPRofile for whole program accessibility */
+        userProfile = new UserProfile(mCtx);
     }
 
     public static synchronized NetworkSingleton getInstance(Context context) {
@@ -148,5 +152,9 @@ public class NetworkSingleton {
     /* This function returns the Eventategory class accessible */
     public EventCategory getEventCategory() {
         return eventCategory;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
     }
 }
