@@ -9,6 +9,9 @@
     <dimen name="paddingSmall">4dp</dimen>
     <dimen name="paddingMedium">8dp</dimen>
     <dimen name="paddingBig">16dp</dimen>
+    <dimen name="marginSmall">16dp</dimen>
+    <dimen name="marginMedium">32dp</dimen>
+    <dimen name="marginBig">64dp</dimen>
     <dimen name="elevationSmall">2dp</dimen>
     <dimen name="elevationMedium">4dp</dimen>
     <dimen name="elevationBig">4dp</dimen>

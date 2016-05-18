@@ -9,14 +9,16 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    private String picture_url;
     private int profile_id;
 
     /* public constructor for a user */
-    public User(int id, String name, String email, String password, int profile_id){
+    public User(int id, String name, String email, String password, String picture_url, int profile_id){
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
+        this.picture_url = picture_url;
         this.profile_id = profile_id;
     }
 
@@ -74,4 +76,12 @@ public class User {
     }
 
     public String getFullName() { return this.name + " " + this.lastName; }
+
+    public String getPicture_url() {
+        return picture_url;
+    }
+
+    public void setPicture_url(String picture_url) {
+        this.picture_url = picture_url;
+    }
 }

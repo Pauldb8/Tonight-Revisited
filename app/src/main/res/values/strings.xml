@@ -107,4 +107,14 @@
     <string name="event_detail_post_added">Votre message a été posté.</string>
     <string name="get_user_url">http://debuck.info/tonight/getUser.php</string>
     <string name="add_event_post_error_posting">Impossible d\'envoyer ce message.</string>
+    <string name="title_activity_change_picture_profile">Changer ma photo</string>
+    <string name="change_profile_picture_title">Changer ma photo de profil.</string>
+    <string name="change_profile_picture_subtitle">Cliquez pour choisir votre nouvelle photo de profil.</string>
+    <string name="change_profile_picture_validate">Changer ma photo</string>
+    <string name="change_profile_picture_upload_url">http://debuck.info/tonight/uploadProfilePicture.php</string>
+    <string name="change_profile_picture_choose_picture">Choisissez une photo</string>
+    <string name="change_profile_picture_loading_title">Téléversement de l\'image</string>
+    <string name="change_profile_picture_loading_subtitle">Veuillez patienter...</string>
+    <string name="change_profile_picture_update">Votre photo de profil a été correctement mise à jour.</string>
+    <string name="change_profile_picture_upload_error">Erreur lors de la mise à jour de votre photo de profil. Veuillez réessayer.</string>
 </resources>

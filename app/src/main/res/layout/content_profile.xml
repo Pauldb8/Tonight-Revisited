@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:useravatar="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="info.debuck.tonight.ProfileActivity"
     tools:showIn="@layout/activity_profile"
@@ -27,18 +28,27 @@
             android:background="@color/colorPrimaryDark"
             android:elevation="4dp">
 
-        <com.pkmmte.view.CircularImageView
+        <info.debuck.tonight.EventClass.UserAvatar
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:id="@+id/profile_picture"
             android:src="@drawable/creator"
-            app:border="true"
-            app:border_color="#EEEEEE"
-            app:border_width="2dp"
-            app:shadow="true"
+            useravatar:ua_border="true"
+            useravatar:ua_border_color="#EEEEEE"
+            useravatar:ua_border_width="2dp"
             android:layout_gravity="center_horizontal" />
 
-        <TextView
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editProfile"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_mode_edit"
+                android:tint="@color/colorPrimaryLight"
+                android:layout_marginLeft="75dp"
+                android:layout_marginTop="-24dp" />
+
+            <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"

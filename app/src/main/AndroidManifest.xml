@@ -114,6 +114,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="info.debuck.tonight.MainActivity" />
         </activity>
+        <activity android:name=".ChangeProfilePictureActivity"
+            android:parentActivityName=".ProfileAndFriendsActivity"
+            android:label="@string/title_activity_change_picture_profile">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.debuck.tonight.ProfileAndFriendsActivity" />
+        </activity>
     </application>
 
 </manifest>

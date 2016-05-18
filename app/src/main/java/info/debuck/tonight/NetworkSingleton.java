@@ -51,20 +51,7 @@ public class NetworkSingleton {
 
 
         /* Creating a cache String - Bitmap of 20 allocation */
-        mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
-            private final LruCache<String, Bitmap>
-                cache = new LruCache<String, Bitmap>(20);
-
-            @Override
-            public Bitmap getBitmap(String url){
-                return cache.get(url);
-            }
-
-            @Override
-            public void putBitmap(String url, Bitmap bitmap){
-                cache.put(url, bitmap);
-            }
-        });
+        mImageLoader = getImageLoader();
 
         /* Caching the eventcategory for whole program accessibility */
         eventCategory = new EventCategory(mCtx);
@@ -114,6 +101,22 @@ public class NetworkSingleton {
     }
 
     public ImageLoader getImageLoader(){
+        if(mImageLoader == null){
+            mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
+                private final LruCache<String, Bitmap>
+                        cache = new LruCache<String, Bitmap>(20);
+
+                @Override
+                public Bitmap getBitmap(String url){
+                    return cache.get(url);
+                }
+
+                @Override
+                public void putBitmap(String url, Bitmap bitmap){
+                    cache.put(url, bitmap);
+                }
+            });
+        }
         return mImageLoader;
     }
 

@@ -19,11 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
 import com.google.gson.Gson;
-import com.pkmmte.view.CircularImageView;
 
 import info.debuck.tonight.EventClass.TonightEvent;
 import info.debuck.tonight.EventClass.User;
+import info.debuck.tonight.EventClass.UserAvatar;
 import info.debuck.tonight.Tools.SessionManager;
 
 public class MainActivity extends AppCompatActivity
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private Gson mGson;
     private NavigationView navigationView;
     private SessionManager sessionManager;
+    private ImageLoader mImageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,17 +72,18 @@ public class MainActivity extends AppCompatActivity
             NetworkSingleton.getInstance(this).setConnectedUSer(sessionManager.getUser());
         }
 
+        /* Starting the NetworkSingleton for unique use with Volley downloader */
+        RequestQueue requestQueue = NetworkSingleton.getInstance(this)
+                .getRequestQueue();
+        requestQueue.start();
+        mImageLoader = NetworkSingleton.getInstance(this).getImageLoader();
+
         /* See if we need to update the drawer when the user is connected for this session */
         if(NetworkSingleton.getInstance(this).getConnectedUSer() != null) {
             mUser = NetworkSingleton.getInstance(this).getConnectedUSer();
             updateDrawerInfo(mUser);
             Log.i("MainActivity", mUser.toString());
         }
-
-        /* Starting the NetworkSingleton for unique use with Volley downloader */
-        RequestQueue requestQueue = NetworkSingleton.getInstance(this)
-                .getRequestQueue();
-        requestQueue.start();
 
         /* Unique GSON from singleton */
         mGson = NetworkSingleton.getInstance(this).getGson(); /* getting the Gson */
@@ -120,7 +123,8 @@ public class MainActivity extends AppCompatActivity
             TextView b = ((TextView) header.findViewById(R.id.user_email));
             b.setText(user.getEmail());
             b.setOnClickListener(this);
-            CircularImageView c = (CircularImageView) header.findViewById(R.id.user_picture);
+            UserAvatar c = (UserAvatar) header.findViewById(R.id.user_picture);
+            c.setImageUrl(user.getPicture_url(), mImageLoader);
             c.setOnClickListener(this);
             //Toast.makeText(this, user.toString(), Toast.LENGTH_LONG).show();
         }

@@ -1,5 +1,6 @@
 package info.debuck.tonight;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,14 +11,19 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+
 import info.debuck.tonight.EventClass.User;
+import info.debuck.tonight.EventClass.UserAvatar;
 import info.debuck.tonight.EventClass.UserProfile;
 
 public class ProfileAndFriendsActivity extends AppCompatActivity {
@@ -123,7 +129,7 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -131,11 +137,14 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
         private static final String ARG_SECTION_NUMBER = "section_number";
         private User mUser;
         private UserProfile mUserProfile;
+        private ImageLoader mImageLoader;
 
         /* Views */
         private TextView tvProfileName;
         private TextView tvProfileEmail;
         private TextView tvProfileProfile;
+        private ImageView ivEditProfilePicture;
+        private UserAvatar uaProfilePicture;
 
         public PlaceholderFragment() {
         }
@@ -166,7 +175,9 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
                             .getConnectedUSer();
                     mUserProfile = NetworkSingleton.getInstance(getActivity().getApplicationContext())
                             .getUserProfile();
-                    setupViews(mUser, mUserProfile, rootView);
+                    mImageLoader = NetworkSingleton.getInstance(getActivity().getApplicationContext())
+                            .getImageLoader();
+                    setupViews(rootView);
                     break;
                 case 2:
                     rootView = inflater.inflate(R.layout.content_profile, container, false);
@@ -180,17 +191,38 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
 
         /**
          * This methods places the information from the user in their corresponding position on the view
-         * @param mUser : the connected user class
-         * @param mUserProfile
          */
-        private void setupViews(User mUser, UserProfile mUserProfile, View rootView) {
+        private void setupViews(View rootView) {
             tvProfileName = (TextView) rootView.findViewById(R.id.profile_name);
             tvProfileEmail = (TextView) rootView.findViewById(R.id.profile_email);
             tvProfileProfile = (TextView) rootView.findViewById(R.id.profile_profile);
+            ivEditProfilePicture = (ImageView) rootView.findViewById(R.id.editProfile);
+            uaProfilePicture = (UserAvatar) rootView.findViewById(R.id.profile_picture);
 
             tvProfileName.setText(mUser.getFullName());
             tvProfileProfile.setText(mUserProfile.getUserProfile(""+mUser.getProfile_id()));
             tvProfileEmail.setText(mUser.getEmail());
+            ivEditProfilePicture.setOnClickListener(this);
+            uaProfilePicture.setImageUrl(mUser.getPicture_url(), mImageLoader);
+        }
+
+        /* This will handle click inside the fragment picture */
+        @Override
+        public void onClick(View v) {
+            int id = v.getId();
+
+            switch(id) {
+                case R.id.editProfile:
+                    getActivity().startActivity(new Intent(getActivity().getApplicationContext(),
+                            ChangeProfilePictureActivity.class));
+                    break;
+            }
+        }
+
+        @Override
+        public void onResume(){
+            super.onResume();
+            Log.i("ProfileAndFriends", "resumed");
         }
     }
 

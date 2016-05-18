@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="UserAvatar">
+        <attr name="ua_border" format="boolean"></attr>
+        <attr name="ua_border_width" format="dimension"></attr>
+        <attr name="ua_border_color" format="color"></attr>
+        <attr name="ua_shadow" format="boolean"></attr>
+    </declare-styleable>
+</resources>
