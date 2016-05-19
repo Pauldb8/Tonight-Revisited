@@ -59,6 +59,15 @@
                 android:value="info.debuck.tonight.MainActivity" />
         </activity>
         <activity
+            android:name=".SubscribeActivity"
+            android:label="@string/subscribe_activity_label"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.debuck.tonight.MainActivity" />
+        </activity>
+        <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:parentActivityName=".MainActivity"
@@ -75,15 +84,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="info.debuck.tonight.MainActivity" />
         </activity>
-        <activity
-            android:name=".SubscribeActivity"
-            android:label="@string/subscribe_activity_label"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="info.debuck.tonight.MainActivity" />
-        </activity>
+
         <activity
             android:name=".SubscribedEventActivity"
             android:label="@string/subscribed_event_activity_label"

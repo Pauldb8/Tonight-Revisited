@@ -1,45 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:background="@color/colorPrimaryDark"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".LoginActivity"
     android:padding="16dp">
 
-    <!-- Login progress -->
-    <TextView
-        android:id="@+id/loginAppTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/app_name"
-        android:textSize="150dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/subscribe_subtitle"
-        android:id="@+id/textView2"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/white"
-        android:layout_marginBottom="20dp"
-        android:textAlignment="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/login_instruction"
-        android:id="@+id/textView3"
-        android:textColor="@color/colorPrimaryLightest"
-        android:layout_gravity="center_horizontal"
-        android:lineSpacingMultiplier="0.8" />
 
     <ProgressBar
         android:id="@+id/login_progress"
@@ -59,6 +29,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <!-- Login progress -->
+            <TextView
+                android:id="@+id/loginAppTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/app_name"
+                android:textSize="150dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/subscribe_subtitle"
+                android:id="@+id/textView2"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/white"
+                android:layout_marginBottom="20dp"
+                android:textAlignment="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/login_instruction"
+                android:id="@+id/textView3"
+                android:textColor="@color/colorPrimaryLightest"
+                android:layout_gravity="center_horizontal"
+                android:lineSpacingMultiplier="0.8" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -106,4 +106,4 @@
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
