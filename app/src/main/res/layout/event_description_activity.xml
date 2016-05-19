@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:useravatar="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".EventDescriptionActivity">
 
@@ -16,7 +17,7 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content">
 
             <com.android.volley.toolbox.NetworkImageView
             android:layout_width="fill_parent"
@@ -25,7 +26,6 @@
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:transitionName="evTransitionPic"
             xmlns:android="http://schemas.android.com/apk/res/android" />
 
             <View
@@ -48,7 +48,8 @@
                 android:paddingBottom="10dp"
                 android:padding="10dp"
                 android:gravity="center_horizontal"
-                android:textSize="20dp"/>
+                android:textSize="20sp"
+                tools:ignore="HardcodedText" />
 
             <View
                 android:layout_width="match_parent"
@@ -64,13 +65,14 @@
                 android:layout_below="@+id/lineSeparator1"
                 android:id="@+id/firstRow"
                 android:layout_centerHorizontal="true"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
+                    android:layout_gravity="start"
                     android:layout_weight="1">
 
                     <ImageView
@@ -83,7 +85,8 @@
                         android:paddingBottom="14dp"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:tint="@color/colorPrimaryDark" />
+                        android:tint="@color/colorPrimaryDark"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -285,7 +288,7 @@
                     android:layout_weight="1"
                     android:layout_gravity="top"
                     android:gravity="center_horizontal"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     android:textColor="@color/primary_text"
                     android:layout_marginTop="10dp" />
 
@@ -296,7 +299,7 @@
                     android:id="@+id/evDescription"
                     android:layout_weight="8"
                     android:layout_gravity="bottom"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:textColor="@color/secondary_text"
                     android:padding="10dp" />
 
@@ -330,16 +333,16 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <com.pkmmte.view.CircularImageView
+                        <info.debuck.tonight.EventClass.UserAvatar
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/creator"
+                            android:src="@drawable/ic_account_circle"
                             android:layout_marginEnd="@dimen/paddingMedium"
-                            app:border="true"
-                            app:border_color="#000000"
-                            app:border_width="1dp"
-                            app:shadow="false"
-                            android:layout_weight="0"/>
+                            useravatar:ua_border="true"
+                            useravatar:ua_border_color="#000000"
+                            useravatar:ua_border_width="1dp"
+                            android:layout_weight="0"
+                            android:id="@+id/uaProfilePicture"/>
 
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -349,7 +352,7 @@
 
                             <EditText
                                 android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="0dp"
                                 android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
                                 android:ems="10"
                                 android:hint="@string/ev_desc_express_yourself"
@@ -363,7 +366,7 @@
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:text="@string/send"
                                 android:id="@+id/sendWritePost"
-                                android:layout_gravity="right"
+                                android:layout_gravity="end"
                                 android:layout_marginTop="@dimen/paddingBig"
                                 android:textColor="@color/colorAccent" />
 
@@ -409,7 +412,6 @@
                         android:text="@string/event_detail_subscribe"
                         android:id="@+id/subscribe"
                         android:layout_gravity="center_horizontal"
-                        android:layout_weight="1"
                         android:textColor="@color/colorAccent"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"

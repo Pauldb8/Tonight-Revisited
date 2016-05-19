@@ -35,6 +35,7 @@ import info.debuck.tonight.EventClass.TonightEventForeignKeys;
 import info.debuck.tonight.EventClass.TonightEventPost;
 import info.debuck.tonight.EventClass.TonightRequest;
 import info.debuck.tonight.EventClass.User;
+import info.debuck.tonight.EventClass.UserAvatar;
 import info.debuck.tonight.Tools.GsonRequest;
 import info.debuck.tonight.Tools.SessionManager;
 
@@ -57,6 +58,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     private ViewSwitcher viewSwitcher;
     private TextView sendWritePost;
     private ListView lvEventListPost;
+    private UserAvatar userAvatar;
 
     /* TonightEvent properties */
     private Gson gson;
@@ -97,6 +99,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         llWritePost = (LinearLayout) findViewById(R.id.fifthRow);
         sendWritePost = (TextView) findViewById(R.id.sendWritePost);
         lvEventListPost = (ListView) findViewById(R.id.event_post_list);
+        userAvatar = (UserAvatar) findViewById(R.id.uaProfilePicture);
 
         /* Getting the serialized TonightEvent object from the intent extra and creating an instance
         * of TonightEvent from it */
@@ -143,6 +146,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         evStartTime.setText(event.getStartHour());
         //todo: evLocation.setText(event.get);
         evDescription.setText(Html.fromHtml(refactorText(event.getDescription())));
+        userAvatar.setImageUrl(mUser.getPicture_url(), mImageLoader);
 
         /* Adding click listeners */
         evSubscribe.setOnClickListener(this);

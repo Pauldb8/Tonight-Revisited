@@ -16,9 +16,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import info.debuck.tonight.EventClass.TonightEventPost;
 import info.debuck.tonight.EventClass.User;
+import info.debuck.tonight.EventClass.UserAvatar;
 import info.debuck.tonight.Tools.GsonRequest;
 
 /**
@@ -30,19 +32,20 @@ public class EventPostCustomAdapter extends ArrayAdapter<TonightEventPost>{
     private Context mContext;
     private ImageLoader mImageLoader;
     private RequestQueue mRequestQueue;
-    private SimpleDateFormat fDateAndTimeEvent = new SimpleDateFormat("EEE d MMM yyyy à hh:mm");
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat fDateAndTimeEvent = new SimpleDateFormat("EEE d MMM yyyy à hh:mm", Locale.FRENCH);
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRENCH);
+    private UserAvatar userAvatar;
 
     public EventPostCustomAdapter(Context context, ArrayList<TonightEventPost> events){
         super(context, 0, events);
         this.mContext = context;
-        //this.mImageLoader = NetworkSingleton.getInstance(this.mContext).getImageLoader();
+        this.mImageLoader = NetworkSingleton.getInstance(this.mContext).getImageLoader();
         this.mRequestQueue = NetworkSingleton.getInstance(this.mContext).getRequestQueue();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
-        TonightEventPost post = (TonightEventPost) getItem(position);
+    public View getView(final int position, View convertView, ViewGroup parent){
+        TonightEventPost post = getItem(position);
 
         View v = convertView;
 
@@ -54,18 +57,26 @@ public class EventPostCustomAdapter extends ArrayAdapter<TonightEventPost>{
 
         TextView postDateTime = (TextView) v.findViewById(R.id.event_post_datetime);
         TextView postMessage = (TextView) v.findViewById(R.id.event_post_message);
-        final TextView postCreator = (TextView) v.findViewById(R.id.event_post_full_name);
+
+        /* This will create a unique view */
+        ViewHolder holder = (ViewHolder) v.getTag(R.id.viewHolder);
+        if(holder == null){
+            holder = new ViewHolder(v);
+            v.setTag(R.id.viewHolder, holder);
+        }
 
         final String url = mContext.getString(R.string.get_user_url) + "?user_id=" + post.getCreator_id();
         /* Getting asynchronously user information */
-        GsonRequest<User> getUserPost = new GsonRequest<User>(
+        final ViewHolder finalHolder = holder;
+        GsonRequest<User> getUserPost = new GsonRequest<>(
                 url,
                 User.class,
                 new Response.Listener<User>() {
                     @Override
                     public void onResponse(User response) {
                         //Log.i("EventPostCustomAdapter", "url: " + url);
-                        postCreator.setText(response.getFullName());
+                        finalHolder.creator.setText(response.getFullName());
+                        finalHolder.image.setImageUrl(response.getPicture_url(), mImageLoader);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -83,5 +94,21 @@ public class EventPostCustomAdapter extends ArrayAdapter<TonightEventPost>{
         postMessage.setText(post.getMessage());
 
         return v;
+    }
+
+
+    /**
+     * This class allow each view to be differentiated
+     */
+    private class ViewHolder{
+        UserAvatar image;
+        TextView creator;
+
+        public ViewHolder(View v){
+            image = (UserAvatar) v.findViewById(R.id.uaProfilePicture);
+            creator = (TextView) v.findViewById(R.id.event_post_full_name);
+
+            v.setTag(this);
+        }
     }
 }

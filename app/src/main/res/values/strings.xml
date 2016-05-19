@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Tonight</string>
-    <string name="google_maps_api_key"></string>
     <string name="webserver">http://debuck.info/</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -34,7 +33,7 @@
     <string name="title_activity_profile">Mon profil</string>
     <string name="menu_drawer_params">Paramètres</string>
     <string name="menu_drawer_events">Mes inscriptions</string>
-    <string name="menu_drawer_profile">Mon compte</string>
+    <string name="menu_drawer_profile">Mon profil</string>
     <string name="main_error_not_connected">Vous n\'êtes pas connecté. Connectez-vous pour créer un
         évènement.</string>
     <string name="add_event_title">Titre de l\'évènement</string>
@@ -114,7 +113,8 @@
     <string name="change_profile_picture_upload_url">http://debuck.info/tonight/uploadProfilePicture.php</string>
     <string name="change_profile_picture_choose_picture">Choisissez une photo</string>
     <string name="change_profile_picture_loading_title">Téléversement de l\'image</string>
-    <string name="change_profile_picture_loading_subtitle">Veuillez patienter...</string>
+    <string name="change_profile_picture_loading_subtitle">Veuillez patienter…</string>
     <string name="change_profile_picture_update">Votre photo de profil a été correctement mise à jour.</string>
     <string name="change_profile_picture_upload_error">Erreur lors de la mise à jour de votre photo de profil. Veuillez réessayer.</string>
+    <string name="drawer_my_account">Mon compte</string>
 </resources>
