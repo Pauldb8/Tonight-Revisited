@@ -1,5 +1,8 @@
 package info.debuck.tonight;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +30,12 @@ import com.google.gson.Gson;
 import info.debuck.tonight.EventClass.TonightEvent;
 import info.debuck.tonight.EventClass.User;
 import info.debuck.tonight.EventClass.UserAvatar;
+import info.debuck.tonight.Tools.MaterialSpinnerAdapter;
 import info.debuck.tonight.Tools.SessionManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        AdapterView.OnItemClickListener, View.OnClickListener {
+        AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
 
     public static final String TONIGHT_INTENT_EXTRA_DESC = "tonight.intent.extra_desc";
@@ -42,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private SessionManager sessionManager;
     private ImageLoader mImageLoader;
+    private Spinner mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +56,22 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        /* Setting up the toolbar anyway */
+        MaterialSpinnerAdapter adapter = new MaterialSpinnerAdapter(this);
+        adapter.addItem("Louvain-La-Neuve");
+        adapter.addItem("Bruxelles");
+        mSpinner = (Spinner) findViewById(R.id.spinner_nav);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(this);
 
+        /* Setting up the fab */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.main_include)
                 .findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
+        /* Setting up the drawer */
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -154,6 +171,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(new ComponentName(getApplicationContext(),
+                        SearchResultsActivity.class)));
+
         return true;
     }
 
@@ -167,6 +194,9 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if(id == R.id.search){
+            onSearchRequested();
         }
 
         return super.onOptionsItemSelected(item);
@@ -219,6 +249,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.i("Adapter", "clicked: " + view.getClass());
         TonightEvent clickedEvent = (TonightEvent)parent.getAdapter().getItem(position);
         Intent openDetail = new Intent(this, EventDescriptionActivity.class);
         String serializedObject = mGson.toJson(clickedEvent);
@@ -290,4 +321,20 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /**
+     * This method will handle click made in the spinner on the tooblar
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

@@ -39,11 +39,12 @@
     <string name="add_event_title">Titre de l\'évènement</string>
     <string name="add_event_create">Créer l\'évènement</string>
     <string name="add_event_activity_label">Créer un évènement</string>
-    <string name="add_choose_price">Définissez le prix</string>
+    <string name="add_choose_price">Définissez le prix (€)</string>
     <string name="add_choose_price_confirm">Confirmer</string>
     <string name="add_choose_price_cancel">Annuler</string>
     <string name="add_choose_pic">Choisissez une photo</string>
     <string name="add_event_max_people">Nombre max. de part.</string>
+    <string name="add_event_end_hour">h de fin (facult.)</string>
     <string name="ev_detail_free">Gratuit</string>
     <string name="add_event_check_all_day">Toute la journée</string>
     <string name="place_details"><![CDATA[&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id:
@@ -62,7 +63,7 @@
     <string name="subscribe_url">http://debuck.info/tonight/addUser.php</string>
     <string name="auth_subscribe_success">Votre compte a été crée, vous êtes à présent connecté.</string>
     <string name="isLocationRightURL">http://debuck.info/tonight/isLocationRight.php</string>
-    <string name="add_event_error_location">Cette adresse n\'est pas autorisée pour le moment, veuillez la changer.</string>
+    <string name="add_event_error_location">Cette ville n\'est pas autorisée pour le moment, veuillez changer d\'adresse.</string>
     <string name="add_event_error_network">Il y a eu un problème avec la connexion au serveur.</string>
     <string name="uploadEventLocationURL">http://debuck.info/tonight/addEventLocation.php</string>
     <string name="uploadEventURL">http://debuck.info/tonight/addEvent.php</string>
@@ -71,7 +72,7 @@
     <string name="event_detail_error_network">Une erreur est survenu lors de la connexion réseau.</string>
     <string name="event_detail_not_auth">Veuillez vous connecter pour continuer.</string>
     <string name="is_subscribe_event_url">http://debuck.info/tonight/isSubscribed.php</string>
-    <string name="add_event_illimited_people">Participants illimité</string>
+    <string name="add_event_illimited_people">Participants illimités</string>
     <string name="subscribed_event_activity_label">Mes inscriptions</string>
     <string name="menu_drawer_events_created">Mes créations</string>
     <string name="created_event_activity_label">Évènements que j\'ai crées</string>
@@ -117,4 +118,9 @@
     <string name="change_profile_picture_update">Votre photo de profil a été correctement mise à jour.</string>
     <string name="change_profile_picture_upload_error">Erreur lors de la mise à jour de votre photo de profil. Veuillez réessayer.</string>
     <string name="drawer_my_account">Mon compte</string>
+    <string name="search_title">Rechercher un évènement</string>
+    <string name="search_hint">Rechercher un évènement</string>
+    <string name="add_event_error_select_address">Veuillez indiquer l\'adresse.</string>
+    <string name="add_event_error_write_title">Veuillez donner un nom.</string>
+    <string name="add_event_error_write_description">Décrivez votre évènement.</string>
 </resources>
