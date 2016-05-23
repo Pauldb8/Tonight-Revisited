@@ -92,6 +92,9 @@ public class getPostEventToView extends AsyncTask<Object, Void, Void>{
                     mAdapter = new EventPostCustomAdapter(mContext, postArray);
                     mView.setAdapter(mAdapter);
                     setListViewHeightBasedOnChildren(mView);
+
+                    /* Work with new views */
+                    updateView(mView);
                 }
                 else {
                     Log.i("getEventPostToView", "Received: null array, showing empty");
@@ -106,12 +109,20 @@ public class getPostEventToView extends AsyncTask<Object, Void, Void>{
             }
         }, mContext);
 
-        /* Filling resquest queue */;
+        /* Filling resquest queue */
         requestQueue.add(myRequest);
 
         return null;
     }
 
+    private void updateView(ListView mView) {
+
+    }
+
+    /**
+     * This method correct a bug and show the actual height block
+     * @param listView
+     */
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {

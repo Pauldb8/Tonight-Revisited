@@ -214,7 +214,7 @@
                         <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:text="20:00"
+                            android:text="@string/add_event_end_hour"
                             android:id="@+id/addEndTime"
                             android:textColor="@color/primary_text"
                             android:gravity="center_vertical" />

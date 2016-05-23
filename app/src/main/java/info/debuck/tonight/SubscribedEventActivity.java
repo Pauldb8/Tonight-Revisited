@@ -37,6 +37,9 @@ public class SubscribedEventActivity extends AppCompatActivity implements Adapte
         String serializedObject = NetworkSingleton.getInstance(this).getGson().toJson(clickedEvent);
         //Log.i("Test", serializedObject);
         openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
-        startActivity(openDetail);
+        getEventToView getEventAsyncTask = new getEventToView(this, mainListView,
+                getEventToView.REQUEST_SUBSCRIBED_EVENT);
+        getEventAsyncTask.execute();
+        //startActivity(openDetail);
     }
 }

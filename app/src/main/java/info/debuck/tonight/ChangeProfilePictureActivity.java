@@ -1,5 +1,6 @@
 package info.debuck.tonight;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -158,7 +159,7 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
 
         /* prep var to send */
         //Converting bitmap to string
-        String image = getStringImage(bitmap);
+        final String image = getStringImage(bitmap);
         String name = "profile_picture_" + mUser.getId() + "_" + new Date().getTime();
         int user_id = mUser.getId();
 
@@ -167,7 +168,7 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
         params.put(KEY_NAME, name);
         params.put(KEY_USER_ID, "" + user_id);
 
-        GsonRequest<TonightRequest> uploadPicture = new GsonRequest<TonightRequest>(
+        final GsonRequest<TonightRequest> uploadPicture = new GsonRequest<TonightRequest>(
                 Request.Method.POST,
                 upload_url,
                 TonightRequest.class,
@@ -186,7 +187,10 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
                             (new SessionManager(getApplicationContext()))
                                     .createLoginSession(NetworkSingleton.getInstance(
                                             getApplicationContext()).getConnectedUSer());
-
+                            /* We return the picture as a intent */
+                            // Create intent to deliver some kind of result data
+                            setResult(Activity.RESULT_OK);
+                            loading.dismiss();
                             finish();
                         } else {
                             Toast.makeText(getApplicationContext(),

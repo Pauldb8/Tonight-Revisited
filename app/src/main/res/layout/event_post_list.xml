@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:useravatar="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginBottom="@dimen/paddingBig"
     android:padding="@dimen/paddingSmall"
     android:background="@color/white"
-    android:showDividers="none">
+    android:showDividers="none"
+    android:id="@+id/viewHolder">
 
-        <com.pkmmte.view.CircularImageView
+        <info.debuck.tonight.EventClass.UserAvatar
+            android:id="@+id/uaProfilePicture"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/creator"
+            android:src="@drawable/ic_account_circle"
             android:layout_marginEnd="@dimen/paddingMedium"
-            app:border="true"
-            app:border_color="#000000"
-            app:border_width="1dp"
-            app:shadow="false"
+            useravatar:ua_border="true"
+            useravatar:ua_border_color="#000000"
+            useravatar:ua_border_width="1dp"
             android:layout_weight="0"/>
 
         <LinearLayout
@@ -33,7 +34,8 @@
                 android:text="Prénom Nom"
                 android:textColor="@color/colorAccent"
                 android:layout_weight="1"
-                android:id="@+id/event_post_full_name"/>
+                android:id="@+id/event_post_full_name"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/event_post_datetime"
@@ -42,14 +44,14 @@
                 android:text="Le 21 juin 2016 à 20:35"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:color="@color/colorPrimaryLightest"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/paddingMedium"
                 android:ems="10"
-                android:text="J'ai sûrement écrit un truc très cool à lire et intéressant pour tout le monde. Pour pas changer, je vais conquérir le monde mouahaHAHAHA."
                 android:id="@+id/event_post_message"
                 android:layout_weight="1"
                 android:textColor="@color/primary_text" />

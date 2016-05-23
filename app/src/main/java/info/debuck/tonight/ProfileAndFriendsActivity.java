@@ -39,7 +39,8 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private User mUser;
-
+    public static final String TONIGHT_INTENT_CHANGED_PICTURE = "tonight_change_picture";
+    static final int TONIGHT_CHANGE_PICTURE = 8030;  // The request code
     private TextView tvEmail;
 
     TabLayout tabLayout;
@@ -213,8 +214,9 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
 
             switch(id) {
                 case R.id.editProfile:
-                    getActivity().startActivity(new Intent(getActivity().getApplicationContext(),
-                            ChangeProfilePictureActivity.class));
+                    startActivityForResult(new Intent(getActivity().getApplicationContext(),
+                            ChangeProfilePictureActivity.class),
+                            TONIGHT_CHANGE_PICTURE);
                     break;
             }
         }
@@ -224,6 +226,33 @@ public class ProfileAndFriendsActivity extends AppCompatActivity {
             super.onResume();
             Log.i("ProfileAndFriends", "resumed");
         }
+
+        /** When we got a result back from a subsequent activity */
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            // Check which request we're responding to
+
+        /* Here we received the intent from the LoginActivity:
+        we either received a User class so we put it in the Singleton and update the drawer
+         */
+            Log.i("PAFA", "updated picture received");
+            if (requestCode == TONIGHT_CHANGE_PICTURE) {
+                // Make sure the request was successful
+                if (resultCode == RESULT_OK) {
+                    /* Getting new information from the user */
+                    mUser = NetworkSingleton.getInstance(getActivity().getApplicationContext())
+                            .getConnectedUSer();
+                    /* Changing the profile picture */
+                    uaProfilePicture.setImageUrl(mUser.getPicture_url(), mImageLoader);
+
+                }else{
+                    super.onActivityResult(requestCode, resultCode, data);
+                }
+            }else{
+                super.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+
     }
 
     /**

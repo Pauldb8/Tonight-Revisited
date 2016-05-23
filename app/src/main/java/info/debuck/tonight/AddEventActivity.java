@@ -13,6 +13,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -30,6 +31,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,6 +58,9 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -77,7 +82,7 @@ import info.debuck.tonight.Tools.PlaceAutoCompleteAdapter;
 
 
 /**
- * This activity let's the user create an event and add it to the database
+ * This activity let's the mUser create an event and add it to the database
  */
 public class AddEventActivity extends ActionBarActivity implements View.OnClickListener,
         TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener,
@@ -86,6 +91,9 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     private static final int TONIGHT_ADD_EVENT_ERROR_LOCATION = 8020;
     private static final int TONIGHT_ADD_EVENT_ERROR_NETWORK = 8021;
     private static final int TONIGHT_ADD_EVENT_FILL_ALL = 8022;
+    private static final int TONIGHT_FILL_ADDRESS = 8023;
+    private static final int TONIGHT_FILL_TITLE = 8024;
+    private static final int TONIGHT_FILL_DESCRIPTION = 8025;
 
     //The views
     private TextView tvStartTime;
@@ -109,7 +117,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     private Dialog d;
 
 
-    //The user provided information about the event
+    //The mUser provided information about the event
     private int startHourChosen;
     private int startMinuteChosen;
     private int endHourChosen;
@@ -119,7 +127,6 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     private int startDateYear;
     private boolean choosingStartTime = false;
     private boolean allDay = false;
-    private boolean dateChosen = false;
     private boolean timeChosen = false;
     private boolean timeEndChosen = false;
 
@@ -128,18 +135,19 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     private double evPrice;
     private String priceString;
     private Bitmap pictureTaken = null;
-    private String title;
-    private String description;
+    private Uri imageToUpload;
+    private String evTitle;
+    private String evDescription;
     private String evAddress;
     private LatLng evAddressLatLng;
     private String evAddressName;
     private int evAddressCitiesId;
     private int evLocationId;
-    private int max_people;
-    private int category;
+    private int evMaxPeople;
+    private int evCategory;
     private String dateAndTimeStart;
     private String dateAndTimeFinish;
-    private User user;
+    private User mUser;
 
     private NumberPicker np;
 
@@ -182,7 +190,13 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         tvEndTime.setOnClickListener(this);
 
         swAllday = (Switch) findViewById(R.id.addAllDay);
-        swAllday.setOnClickListener(this);
+        //swAllday.setOnClickListener(this);
+        swAllday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                toggleAllDay();
+            }
+        });
 
         tvStartDate = (TextView) findViewById(R.id.addStartDate);
         tvStartDate.setOnClickListener(this);
@@ -205,16 +219,21 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         tvMaxPeople = (TextView) findViewById(R.id.add_ev_tvMaxPeople);
         tvMaxPeople.setOnClickListener(this);
 
+        /* By default we set the date of today, the start hour of now
+           no ending time, free price, cultural, and illimited people
+         */
+        setDefaultValues();
+
         /* This handle the max people selection */
         tvEditMaxPeople = (EditText) findViewById(R.id.max_people);
-        max_people = 0;
+        evMaxPeople = 0;
         tvEditMaxPeople.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus){ /* when losing focus, check if inserted correct number > 0 */
                     if(!((EditText) v).getText().toString().isEmpty()) { /* Not null */
-                        max_people = Integer.decode(((EditText) v).getText().toString());
-                        if (max_people == 0) {
+                        evMaxPeople = Integer.decode(((EditText) v).getText().toString());
+                        if (evMaxPeople == 0) {
                             showUnlimitedPeople();
                         }
                     }else {
@@ -224,34 +243,34 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
             }
         });
 
-        /* This handles the category selection */
-        category = 9;
+        /* This handles the evCategory selection */
+        evCategory = 9;
         spCategory = (Spinner) findViewById(R.id.spinner);
         spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "pos:" + position, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "pos:" + position, Toast.LENGTH_LONG).show();
                 if(position == 0)
-                    category = 1;
+                    evCategory = 1;
                 if(position == 1)
-                    category = 2;
+                    evCategory = 2;
                 if(position == 2)
-                    category = 3;
+                    evCategory = 3;
                 if(position == 3)
-                    category = 4;
+                    evCategory = 4;
                 if(position == 4)
-                    category = 6;
+                    evCategory = 6;
                 if(position == 5)
-                    category = 7;
+                    evCategory = 7;
                 if(position == 6)
-                    category = 8;
+                    evCategory = 8;
                 if(position == 7)
-                    category = 9;
+                    evCategory = 9;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                category = 9;
+                evCategory = 9;
             }
         });
 
@@ -270,7 +289,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
             alternateTakeOrSeePicture("take");
         }
 
-        user = NetworkSingleton.getInstance(this).getConnectedUSer();
+        mUser = NetworkSingleton.getInstance(this).getConnectedUSer();
 
         /* Don't show the keyboard at first */
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -285,6 +304,30 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         /* Here we can change the third argument with some Bounds to precise the location */
         mAdapter = new PlaceAutoCompleteAdapter(this, mGoogleApiClient, null, null);
         mAutocompleteView.setAdapter(mAdapter);
+    }
+
+
+    /* This method sets default values for most of the inputs, so user don't have to fill that much
+        information
+     */
+    private void setDefaultValues() {
+        /* Setting default date to today */
+        this.onDateSet(null, Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+
+        /* Setting default time, this hour o'clock */
+        choosingStartTime = true;
+        int minuteNow = Calendar.getInstance().get(Calendar.MINUTE);
+        /* If we are 20:42 then we show 21h00 if we are 20:39 then we show 20h00 */
+        int hourNow = (minuteNow >= 40) ? (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 1) :
+                (Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        this.onTimeSet(null, hourNow, 0); //Always showing o'clock time, then minute = 0
+
+        /* Setting default price FREE */
+        onValueChange(null, 0, 0);
+        tvPrice.setText(getResources().getString(R.string.ev_detail_free));
+        tvPrice.setTypeface(tvPrice.getTypeface(), Typeface.BOLD);
     }
 
 
@@ -318,6 +361,10 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     public void onClick(View v) {
         int id = v.getId();
         switch(id){
+            case R.id.addStartDate:
+                /* Choosing the date */
+                showMyDialog(ADD_EV_CHOOSE_DATE);
+                break;
             case R.id.addStartTime:
                 showMyDialog(ADD_EV_CHOOSE_TIME);
                 break;
@@ -327,21 +374,18 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
             case R.id.addAllDay:
                 toggleAllDay();
                 break;
-            case R.id.addStartDate:
-                showMyDialog(ADD_EV_CHOOSE_DATE);
-                break;
             case R.id.addPrice:
                 showMyDialog(ADD_EV_CHOOSE_PRICE);
                 break;
             case R.id.evAddFromCamera:
-                //The user wants to take a picture
+                //The mUser wants to take a picture
                 dispatchTakePictureIntent();
                 break;
             case R.id.evAddFromLibrary:
                 dispatchGetFromGalleryIntent();
                 break;
             case R.id.evAddPicture:
-                //We clicked on the picture, the user want to change the one he chose/took
+                //We clicked on the picture, the mUser want to change the one he chose/took
                 alternateTakeOrSeePicture("take");
                 break;
             case R.id.add_ev_tvMaxPeople:
@@ -360,7 +404,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                 break;
             case R.id.buttonCancel:
                 d.dismiss();
-                evPrice = 0;
+                //evPrice = 0;
                 break;
             case R.id.addButton: //We pushed the create
                 verifyAndSendForm();
@@ -373,8 +417,14 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
      * @return: wether the form is complete
      */
     private void verifyAndSendForm() {
+        /* Canceling all error and requestFocus */
+        tvPosition.setError(null);
+        tvTitle.setError(null);
+        tvDescription.setError(null);
+
         //Verifying
-        if (evAddressName != null) {
+        if ((evAddressName != null) && (!tvTitle.getText().toString().isEmpty())
+                && (!tvDescription.getText().toString().isEmpty())) {
             String isLocationRightUrl = getResources().getString(R.string.isLocationRightURL);
             Map<String, String> params = new HashMap<String, String>();
 
@@ -413,8 +463,12 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                         }
                     }, this);
             NetworkSingleton.getInstance(this).getRequestQueue().add(isLocationRight);
-        }else {
-            showMyDialog(TONIGHT_ADD_EVENT_FILL_ALL);
+        }else if(tvTitle.getText().toString().isEmpty()){
+            showMyDialog(TONIGHT_FILL_TITLE);
+        }else if(evAddressName == null){
+            showMyDialog(TONIGHT_FILL_ADDRESS);
+        }else if(tvDescription.getText().toString().isEmpty()){
+            showMyDialog(TONIGHT_FILL_DESCRIPTION);
         }
     }
 
@@ -442,7 +496,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("adding", eventLocationJSON.toString());
+        //Log.i("adding", eventLocationJSON.toString());
 
 
         /* position is in one of the authorized city */
@@ -500,13 +554,13 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                 tvTitle.getText().toString(),
                 start_date,
                 end_date,
-                max_people,
+                evMaxPeople,
                 evPrice,
                 "https://placeholdit.imgix.net/~text?txtsize=56&txt=600%C3%97300&w=600&h=300",
                 tvDescription.getText().toString(),
                 today,
                 NetworkSingleton.getInstance(this).getConnectedUSer().getId(),
-                category, /*Style: 1 = cultural, 2 = nightlife etc... */
+                evCategory, /*Style: 1 = cultural, 2 = nightlife etc... */
                 1, /* 1 = open, 2 = private, 3 = canceled etc.. */
                 evLocationId);//The id returned from the previous request
 
@@ -584,7 +638,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     public void showUnlimitedPeople(){
         this.tvMaxPeople.setVisibility(View.VISIBLE);
         this.tvEditMaxPeople.setVisibility(View.GONE);
-        max_people = 0;
+        evMaxPeople = 0;
     }
     /**
      * This method show a dialog for inserting the details
@@ -592,6 +646,12 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
      */
     public void showMyDialog(int type){
         switch(type){
+            case ADD_EV_CHOOSE_DATE:
+                /* We launch the DatePickerDialog */
+                new DatePickerDialog(this, this, Calendar.getInstance().get(Calendar.YEAR),
+                        Calendar.getInstance().get(Calendar.MONTH),
+                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)).show();
+                break;
             case ADD_EV_CHOOSE_TIME:
                 choosingStartTime = true;
                 new TimePickerDialog(this, this, Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
@@ -603,13 +663,9 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                         Calendar.getInstance().get(Calendar.MINUTE), true).show();
 
                 break;
-            case ADD_EV_CHOOSE_DATE:
-                new DatePickerDialog(this, this, Calendar.getInstance().get(Calendar.YEAR),
-                        Calendar.getInstance().get(Calendar.MONTH),
-                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)).show();
-                break;
+
             case ADD_EV_CHOOSE_PRICE:
-                //We show a dialog that allows user to choose the evPrice ranging from 0 to 100
+                //We show a dialog that allows mUser to choose the evPrice ranging from 0 to 100
                 d = new Dialog(this);
                 d.setTitle(getResources().getString(R.string.add_choose_price));
                 d.setContentView(R.layout.add_event_price_dialog);
@@ -627,16 +683,24 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                 d.show();
                 break;
             case TONIGHT_ADD_EVENT_ERROR_LOCATION:
-                Toast.makeText(this, getString(R.string.add_event_error_location),
-                        Toast.LENGTH_LONG).show();
+                tvPosition.setError(getString(R.string.add_event_error_location));
+                tvPosition.requestFocus();
                 break;
             case TONIGHT_ADD_EVENT_ERROR_NETWORK:
                 Toast.makeText(this, getString(R.string.add_event_error_network),
                         Toast.LENGTH_SHORT).show();
                 break;
-            case TONIGHT_ADD_EVENT_FILL_ALL:
-                Toast.makeText(this, getString(R.string.add_event_error_fill_all),
-                        Toast.LENGTH_SHORT).show();
+            case TONIGHT_FILL_ADDRESS:
+                /* We haven't selected an address, show error and request focus */
+                tvPosition.setError(getString(R.string.add_event_error_select_address));
+                tvPosition.requestFocus();
+                break;
+            case TONIGHT_FILL_TITLE:
+                tvTitle.setError(getString(R.string.add_event_error_write_title));
+                tvTitle.requestFocus();
+                break;
+            case TONIGHT_FILL_DESCRIPTION:
+                tvDescription.setError(getString(R.string.add_event_error_write_description));
                 break;
         }
     }
@@ -646,6 +710,9 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
      */
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File f = new File(Environment.getExternalStorageDirectory(), "event_picture.jpg");
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        imageToUpload = Uri.fromFile(f);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, ADD_EV_OPEN_CAMERA);
         }
@@ -672,27 +739,17 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
      * @param data
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //We receive data from the GOOGLE MAPS API so we get back the position
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                /*Place place = PlacePicker.getPlace(data, this);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-                createdEvent = new EventLocation(place.getId(), place.getName().toString(),
-                        place.getLatLng().latitude, place.getLatLng().longitude,
-                        place.getAddress().toString());
-                Log.i("AddEvent:", "Position choosed : " + createdEvent.toString());
-                this.tvPosition.setTypeface(tvPosition.getTypeface(), Typeface.BOLD);
-                this.tvPosition.setText(createdEvent.getAddress());*/
-            }
-        }
-
         //We receive data from the CAMERA so we get back a picture
         if (requestCode == ADD_EV_OPEN_CAMERA && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            //Converting bitmap to drawable
-            pictureTaken = (Bitmap) extras.get("data");
-            alternateTakeOrSeePicture("see");
+            if(imageToUpload != null){
+                Uri selectedImage = imageToUpload;
+                getContentResolver().notifyChange(selectedImage, null);
+                Bitmap reducedSizeBitmap = getBitmap(imageToUpload.getPath());
+                if(reducedSizeBitmap != null){
+                    pictureTaken = reducedSizeBitmap;
+                    alternateTakeOrSeePicture("see");
+                }
+            }
         }
 
         //We receive data from the GALLERY APP so we get back a picture
@@ -729,11 +786,11 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     /**
      * This method does two things
      * see: removes the icons to take picture, and show the selected picture instead
-     * take: removes the picture and allows user to take a new one.
+     * take: removes the picture and allows mUser to take a new one.
      * @param action
      */
     private void alternateTakeOrSeePicture(String action) {
-        //The user took a picture so we show it and remove the icons to take a picture
+        //The mUser took a picture so we show it and remove the icons to take a picture
         if(action.equals("see")){
             //Remove the icon Take Picture and From Gallery
             ivAddCamera.setVisibility(View.GONE);
@@ -741,7 +798,8 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
             //Set the background the picture taken
             llAddPicture.setBackground(new BitmapDrawable(getResources(), pictureTaken));
             llAddPicture.setOnClickListener(this);
-            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200,
+            int height = (int) TypedValue.applyDimension(TypedValue.DENSITY_DEFAULT,
+                    pictureTaken.getDensity(),
                     getResources().getDisplayMetrics());
             llAddPicture.getLayoutParams().height = height;
         }
@@ -772,6 +830,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
             this.tvEndTime.setEnabled(false);
             this.tvStartTime.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryLightest));
             this.tvEndTime.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryLightest));
+            this.swAllday.setTypeface(swAllday.getTypeface(), Typeface.BOLD);
             ((ImageView) findViewById(R.id.evIcTime)).setColorFilter(ContextCompat.getColor(this,
                     R.color.colorPrimaryLightest));
             ((ImageView) findViewById(R.id.evIcTimeEnd)).setColorFilter(ContextCompat.getColor(this,
@@ -782,6 +841,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
             this.tvEndTime.setEnabled(true);
             this.tvStartTime.setTextColor(ContextCompat.getColor(this, R.color.primary_text));
             this.tvEndTime.setTextColor(ContextCompat.getColor(this, R.color.primary_text));
+            this.swAllday.setTypeface(null, Typeface.NORMAL);
             ((ImageView) findViewById(R.id.evIcTime)).setColorFilter(ContextCompat.getColor(this,
                     R.color.primary_text));
             ((ImageView) findViewById(R.id.evIcTimeEnd)).setColorFilter(ContextCompat.getColor(this,
@@ -801,7 +861,6 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         if(choosingStartTime) {
             this.startHourChosen = hourOfDay;
             this.startMinuteChosen = minute;
-            this.timeChosen = true;
 
             this.tvStartTime.setText(String.format("%02d:%02d", this.startHourChosen,
                     this.startMinuteChosen));
@@ -819,7 +878,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     }
 
     /**
-     * We update the textview when the user chooses the date
+     * We update the textview when the mUser chooses the date
      * @param view
      * @param year
      * @param monthOfYear
@@ -830,9 +889,8 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         this.startDateDay = dayOfMonth;
         this.startDateMonth = monthOfYear + 1; //Because it returns month from 0 to 11
         this.startDateYear = year;
-        this.dateChosen = true;
-        Log.i("AddEvent", "Chosen date : " + this.startDateDay + "/" + this.startDateMonth
-                + "/" + this.startDateYear);
+        //Log.i("AddEvent", "Chosen date : " + this.startDateDay + "/" + this.startDateMonth
+        //        + "/" + this.startDateYear);
 
         //Get the day from this date
         try {
@@ -848,7 +906,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     }
 
     /**
-     * When the user makes changes to the NumberPicker for choosing the evPrice
+     * When the mUser makes changes to the NumberPicker for choosing the evPrice
      * We save the value entered and update the UI accordingly
      * @param picker
      * @param oldVal
@@ -891,13 +949,13 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
              /*
              Retrieve the place ID of the selected item from the Adapter.
              The adapter stores each Place suggestion in a AutocompletePrediction from which we
-             read the place ID and title.
+             read the place ID and evTitle.
               */
             final AutocompletePrediction item = mAdapter.getItem(position);
             final String placeId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
 
-            Log.i("AddEventActivity", "Autocomplete item selected: " + primaryText);
+            //Log.i("AddEventActivity", "Autocomplete item selected: " + primaryText);
 
             /*
              Issue a request to the Places Geo Data API to retrieve a Place object with additional
@@ -909,7 +967,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
 
             //Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
                     //Toast.LENGTH_SHORT).show();
-            Log.i("AddEventActivity", "Called getPlaceById to get Place details for " + placeId);
+            //Log.i("AddEventActivity", "Called getPlaceById to get Place details for " + placeId);
         }
     };
 
@@ -932,6 +990,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
 
             // Format details of the place for display and show it in a TextView.
             tvPosition.setText(place.getAddress());
+            tvPosition.setSelected(false);
             evAddress = place.getAddress().toString();
             evAddressLatLng = place.getLatLng();
             evAddressName = place.getName().toString();
@@ -955,7 +1014,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     /**
      * Called when the Activity could not connect to Google Play services and the auto manager
      * could resolve the error automatically.
-     * In this case the API is not available and notify the user.
+     * In this case the API is not available and notify the mUser.
      *
      * @param connectionResult can be inspected to determine the cause of the failure
      */
@@ -964,9 +1023,76 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         Log.e("AddEventActivity", "onConnectionFailed: ConnectionResult.getErrorCode() = "
                 + connectionResult.getErrorCode());
 
-        // TODO(Developer): Check error code and notify the user of error state and resolution.
+        // TODO(Developer): Check error code and notify the mUser of error state and resolution.
         Toast.makeText(this,
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
+    }
+
+
+    /**
+     * This method get a bitmap from a URI and downsize it to 1.2MP and returns it
+     * @param path
+     * @return
+     */
+    private Bitmap getBitmap(String path) {
+
+        Uri uri = Uri.fromFile(new File(path));
+        InputStream in = null;
+        try {
+            final int IMAGE_MAX_SIZE = 1200000; // 1.2MP
+            in = getContentResolver().openInputStream(uri);
+
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(in, null, o);
+            in.close();
+
+
+            int scale = 1;
+            while ((o.outWidth * o.outHeight) * (1 / Math.pow(scale, 2)) >
+                    IMAGE_MAX_SIZE) {
+                scale++;
+            }
+            Log.d("", "scale = " + scale + ", orig-width: " + o.outWidth + ", orig-height: " + o.outHeight);
+
+            Bitmap b = null;
+            in = getContentResolver().openInputStream(uri);
+            if (scale > 1) {
+                scale--;
+                // scale to max possible inSampleSize that still yields an image
+                // larger than target
+                o = new BitmapFactory.Options();
+                o.inSampleSize = scale;
+                b = BitmapFactory.decodeStream(in, null, o);
+
+                // resize to desired dimensions
+                int height = b.getHeight();
+                int width = b.getWidth();
+                Log.d("", "1th scale operation dimenions - width: " + width + ", height: " + height);
+
+                double y = Math.sqrt(IMAGE_MAX_SIZE
+                        / (((double) width) / height));
+                double x = (y / height) * width;
+
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, (int) x,
+                        (int) y, true);
+                b.recycle();
+                b = scaledBitmap;
+
+                System.gc();
+            } else {
+                b = BitmapFactory.decodeStream(in);
+            }
+            in.close();
+
+            Log.d("", "bitmap size - width: " + b.getWidth() + ", height: " +
+                    b.getHeight());
+            return b;
+        } catch (IOException e) {
+            Log.e("", e.getMessage(), e);
+            return null;
+        }
     }
 }
