@@ -1,7 +1,6 @@
 package info.debuck.tonight;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,12 +12,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     public static final String TONIGHT_INTENT_EXTRA_LOGIN = "tonight.intent.extra_login";
     static final int TONIGHT_AUTH_REQUEST = 8020;  // The request code
     private ListView mainListView = null;
+    private ProgressBar mainLoader = null;
     private User mUser;
     private DrawerLayout mDrawer;
     private Gson mGson;
@@ -111,7 +113,9 @@ public class MainActivity extends AppCompatActivity
          */
         mainListView = (ListView) findViewById(R.id.mainListView);
         mainListView.setOnItemClickListener(this);
-        getEventToView getEventAsyncTask = new getEventToView(this, mainListView,
+        mainListView.setEmptyView(findViewById(R.id.empty_view));
+        mainLoader = (ProgressBar) findViewById(R.id.loading);
+        getEventToView getEventAsyncTask = new getEventToView(this, mainListView, mainLoader,
                 getEventToView.REQUEST_ALL_EVENT);
         getEventAsyncTask.execute();
 
@@ -177,9 +181,28 @@ public class MainActivity extends AppCompatActivity
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
                 (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
+        /*searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(new ComponentName(getApplicationContext(),
-                        SearchResultsActivity.class)));
+                        SearchResultsActivity.class)));*/
+
+        /* this will trigger the filter in the listview */
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(!TextUtils.isEmpty(newText)) {
+                    ((EventCustomAdapter) mainListView.getAdapter()).getFilter().filter(newText.toString());
+                }else {
+                    ((EventCustomAdapter) mainListView.getAdapter()).getFilter().filter(newText.toString());
+                }
+
+                return true;
+            }
+        });
 
         return true;
     }
@@ -330,7 +353,19 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        String selectedCity = (String) parent.getItemAtPosition(position);
+        if(selectedCity.equals("Louvain-La-Neuve")){
+            mainListView.setAdapter(null);
+            getEventToView getEventAsyncTask = new getEventToView(this, mainListView, mainLoader,
+                    getEventToView.REQUEST_EVENT_FROM_CITY, 2);
+            getEventAsyncTask.execute();
+        }
+        else if (selectedCity.equals("Bruxelles")){
+            mainListView.setAdapter(null);
+            getEventToView getEventAsyncTask = new getEventToView(this, mainListView, mainLoader,
+                    getEventToView.REQUEST_EVENT_FROM_CITY, 1);
+            getEventAsyncTask.execute();
+        }
     }
 
     @Override

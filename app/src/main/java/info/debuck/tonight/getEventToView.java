@@ -3,7 +3,9 @@ package info.debuck.tonight;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,28 +29,42 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
     public final static int REQUEST_ALL_EVENT = 1;
     public final static int REQUEST_CREATED_EVENT = 2;
     public final static int REQUEST_SUBSCRIBED_EVENT = 3;
+    public final static int REQUEST_EVENT_FROM_CITY = 4;
 
     /* Necessary variables */
     private ArrayList<TonightEvent> eventArray;
     private EventCustomAdapter mAdapter;
     private ListView mView;
+    private ProgressBar mLoader;
     private int mRequest;
     private String finalRequestURL;
     private Context mContext;
     private JSONObject JSONResponse;
+    private int cities_id;
 
-    public getEventToView(Context context, ListView myView, int request){
+    public getEventToView(Context context, ListView myView, ProgressBar loader, int request){
         this.mContext = context;
         this.mView = myView;
+        this.mLoader = loader;
         this.mRequest = request;
+    }
+
+    /* This constructor handles the city */
+    public getEventToView(Context context, ListView myView, ProgressBar loader, int request, int cities_id){
+        this(context, myView, loader, request);
+        this.cities_id = cities_id;
     }
 
     /**
      * We get the URL correct before calling starting the task
+     * we hide the listview, and show the loader
      */
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        mView.setVisibility(ListView.GONE);
+        mLoader.setVisibility(View.VISIBLE);
+
         finalRequestURL = mContext.getResources().getString(R.string.webserver);
 
         switch(mRequest){
@@ -63,6 +79,9 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
                 finalRequestURL += "tonight/getCreatedEvents.php?id="
                         + NetworkSingleton.getInstance(mContext).getConnectedUSer().getId();
                 break;
+            case REQUEST_EVENT_FROM_CITY:
+                finalRequestURL += "tonight/getEventFromCity.php?cities_id="
+                        + this.cities_id;
             default:
                 finalRequestURL += "tonight/getEvents.php";
                 break;
@@ -108,6 +127,13 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
         requestQueue.add(myRequest);
 
         return null;
+    }
+
+
+    @Override
+    protected void onPostExecute(Void v){
+        mView.setVisibility(ListView.VISIBLE);
+        mLoader.setVisibility(View.GONE);
     }
 
 }
