@@ -2,6 +2,7 @@ package info.debuck.tonight;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -43,6 +45,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.android.gms.common.ConnectionResult;
@@ -58,6 +62,7 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,6 +73,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import info.debuck.tonight.EventClass.TonightEvent;
@@ -94,6 +100,8 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     private static final int TONIGHT_FILL_ADDRESS = 8023;
     private static final int TONIGHT_FILL_TITLE = 8024;
     private static final int TONIGHT_FILL_DESCRIPTION = 8025;
+    public final String KEY_IMAGE = "image";
+    public final String KEY_NAME = "name";
 
     //The views
     private TextView tvStartTime;
@@ -115,6 +123,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     DrawerLayout mDrawerLayout;
     private User userInfo;
     private Dialog d;
+    private ProgressDialog loading;
 
 
     //The mUser provided information about the event
@@ -141,6 +150,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     private String evAddress;
     private LatLng evAddressLatLng;
     private String evAddressName;
+    private String evPictureURL;
     private int evAddressCitiesId;
     private int evLocationId;
     private int evMaxPeople;
@@ -148,6 +158,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
     private String dateAndTimeStart;
     private String dateAndTimeFinish;
     private User mUser;
+    private RequestQueue mRequestQueue;
 
     private NumberPicker np;
 
@@ -290,6 +301,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         }
 
         mUser = NetworkSingleton.getInstance(this).getConnectedUSer();
+        mRequestQueue = NetworkSingleton.getInstance(this).getRequestQueue();
 
         /* Don't show the keyboard at first */
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -424,7 +436,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
 
         //Verifying
         if ((evAddressName != null) && (!tvTitle.getText().toString().isEmpty())
-                && (!tvDescription.getText().toString().isEmpty())) {
+                && (!tvDescription.getText().toString().isEmpty()) && (pictureTaken != null)) {
             String isLocationRightUrl = getResources().getString(R.string.isLocationRightURL);
             Map<String, String> params = new HashMap<String, String>();
 
@@ -434,6 +446,14 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
 
             params.put("location", zipAddress.trim());
             Log.i("AEAzipAddress", zipAddress);
+
+            /* Showing progress dialog */
+            loading = ProgressDialog.show(this,
+                    getString(R.string.add_event_progress_title),
+                    getString(R.string.add_event_progress_subtitle),
+                    false,
+                    false);
+
             /* position is in one of the authorized city */
             GsonRequest<TonightRequest> isLocationRight = new GsonRequest<TonightRequest>(
                     GsonRequest.Method.POST,
@@ -451,6 +471,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                                 sendInformation();
                             } else {
                                 Log.i("VolleyRespErr", "errorlocation");
+                                loading.dismiss();
                                 showMyDialog(TONIGHT_ADD_EVENT_ERROR_LOCATION);
                             }
                         }
@@ -459,16 +480,22 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.i("VolleyErrLis", "errornetwork");
+                            loading.dismiss();
                             showMyDialog(TONIGHT_ADD_EVENT_ERROR_NETWORK);
                         }
                     }, this);
-            NetworkSingleton.getInstance(this).getRequestQueue().add(isLocationRight);
+
+            mRequestQueue.add(isLocationRight);
+
         }else if(tvTitle.getText().toString().isEmpty()){
             showMyDialog(TONIGHT_FILL_TITLE);
         }else if(evAddressName == null){
             showMyDialog(TONIGHT_FILL_ADDRESS);
         }else if(tvDescription.getText().toString().isEmpty()){
             showMyDialog(TONIGHT_FILL_DESCRIPTION);
+        }else if((pictureTaken == null)){
+            Toast.makeText(AddEventActivity.this, getString(R.string.add_event_error_no_picture),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -514,10 +541,11 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                             evLocationId = Integer.decode(response.getStatusMessage());
                             /* The EventLocation is correct and we received validation from server */
                             /* We can now add the TonightEvent to the queue and wait for a response*/
-                            sendAddEvent();
+                            uploadImage(pictureTaken);
                             //Log.i("addedevlocat", "" + evLocationId);
                         } else {
                             Log.i("addevlocat", "errorlocation");
+                            loading.dismiss();
                             showMyDialog(TONIGHT_ADD_EVENT_ERROR_LOCATION);
                         }
                     }
@@ -526,13 +554,66 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.i("addevlocat", error.getMessage());
+                        loading.dismiss();
                         showMyDialog(TONIGHT_ADD_EVENT_ERROR_NETWORK);
                     }
                 }, this);
 
 
         /* Adding the create EventLocation request queue */
-        NetworkSingleton.getInstance(this).getRequestQueue().add(addLocation);
+        mRequestQueue.add(addLocation);
+    }
+
+
+    /**
+     * This method will upload the picture and get back the url
+     */
+    private void uploadImage(Bitmap picToUpload){
+        /* prep var to send */
+        //Converting bitmap to string
+        final String image = getStringImage(picToUpload);
+        String name = "event_picture_" + mUser.getId() + "_" + new Date().getTime();
+        int user_id = mUser.getId();
+        String upload_url = getString(R.string.add_event_upload_picture_url);
+
+        Map<String, String> params = new Hashtable<String,String>();
+        params.put(KEY_IMAGE, image);
+        params.put(KEY_NAME, name);
+
+        final GsonRequest<TonightRequest> uploadPicture = new GsonRequest<TonightRequest>(
+                Request.Method.POST,
+                upload_url,
+                TonightRequest.class,
+                params,
+                new Response.Listener<TonightRequest>() {
+                    @Override
+                    public void onResponse(TonightRequest response) {
+                        if (response.isStatusReturn()) {
+                            /* We save the picture url and call the send */
+                            evPictureURL = response.getStatusMessage();
+                            sendAddEvent();
+                        } else {
+                            loading.dismiss();
+                            Toast.makeText(getApplicationContext(),
+                                    getString(R.string.add_event_error_uploading_picture),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("AddEventActivity", error.getMessage());
+                        loading.dismiss();
+                        Toast.makeText(getApplicationContext(),
+                                getString(R.string.add_event_error_network),
+                                Toast.LENGTH_LONG).show();
+                    }
+                },
+                this);
+
+        /* adding to the request queue */
+        mRequestQueue.add(uploadPicture);
     }
 
 
@@ -556,7 +637,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                 end_date,
                 evMaxPeople,
                 evPrice,
-                "https://placeholdit.imgix.net/~text?txtsize=56&txt=600%C3%97300&w=600&h=300",
+                evPictureURL,
                 tvDescription.getText().toString(),
                 today,
                 NetworkSingleton.getInstance(this).getConnectedUSer().getId(),
@@ -564,10 +645,6 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                 1, /* 1 = open, 2 = private, 3 = canceled etc.. */
                 evLocationId);//The id returned from the previous request
 
-        //Log.i("EventObject", NetworkSingleton.getInstance(this).getGson().toJson(event).toString());
-
-        /* Preparing the Volley Request for TonightEvent */
-        String uploadEvent = getResources().getString(R.string.uploadEventURL);
 
         /* Creating the GSONified object to send */
         JSONObject eventJSON = null;
@@ -577,10 +654,11 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //Log.i("EventObject", NetworkSingleton.getInstance(this).getGson().toJson(event).toString());
 
+        /* Preparing the Volley Request for TonightEvent */
+        String uploadEvent = getResources().getString(R.string.uploadEventURL);
 
-        /* This will create the event, we will have to add it to the queue */
-        final JSONObject finalEventJSON = eventJSON;
         GsonRequest<TonightRequest> addEvent = new GsonRequest<TonightRequest>(
                 GsonRequest.Method.POST,
                 uploadEvent,
@@ -597,17 +675,25 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                                     Toast.LENGTH_LONG).show();
                             Log.i("addEvent", NetworkSingleton.getInstance(
                                     getApplicationContext()).getGson().toJson(response).toString());
-                            /* we finish the creation activity */
-                            finish();
+                            /* adding the id to the event */
+                            TonightEvent eventWithId = event;
+                            eventWithId.set_ID(Integer.decode(response.getStatusMessage()));
+                            /* Dismiss the loading dialog */
+                            loading.dismiss();
                             /* And we start the detail view of the created event */
                             Intent openDetail =
                                     new Intent(getApplicationContext(), EventDescriptionActivity.class);
-                            String serializedObject = finalEventJSON.toString();
+                            String serializedObject = NetworkSingleton
+                                    .getInstance(getApplicationContext())
+                                    .getGson().toJson(eventWithId);
                             //Log.i("Test", serializedObject);
                             openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
+                            /* we finish the creation activity */
+                            finish();
                             startActivity(openDetail);
                         }
                         else{
+                            loading.dismiss();
                             Toast.makeText(getApplicationContext(), getString(R.string.add_event_not_created),
                                     Toast.LENGTH_LONG).show();
                             Log.i("addEvent", NetworkSingleton.getInstance(
@@ -618,13 +704,14 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
                         Log.i("addEventError", error.getMessage());
                     }
                 },
                 this);
 
         /* Adding the request to the queue */
-        NetworkSingleton.getInstance(getApplicationContext()).getRequestQueue().add(addEvent);
+        mRequestQueue.add(addEvent);
     }
 
 
@@ -1094,5 +1181,18 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
             Log.e("", e.getMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * This method will convert a bitmap to a base64 string
+     * @param bmp
+     * @return
+     */
+    public String getStringImage(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
     }
 }

@@ -123,4 +123,9 @@
     <string name="add_event_error_select_address">Veuillez indiquer l\'adresse.</string>
     <string name="add_event_error_write_title">Veuillez donner un nom.</string>
     <string name="add_event_error_write_description">Décrivez votre évènement.</string>
+    <string name="add_event_upload_picture_url">http://debuck.info/tonight/uploadEventPicture.php</string>
+    <string name="add_event_error_uploading_picture">Erreur lors de l\'envoi de votre image.</string>
+    <string name="add_event_progress_title">Création de votre évènement</string>
+    <string name="add_event_progress_subtitle">Veuillez patienter...</string>
+    <string name="add_event_error_no_picture">Veuillez sélectionner une photo pour votre évènement.</string>
 </resources>

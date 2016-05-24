@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import info.debuck.tonight.EventClass.TonightEvent;
 
 public class SubscribedEventActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView mainListView = null;
+    private ProgressBar mLoader = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +25,11 @@ public class SubscribedEventActivity extends AppCompatActivity implements Adapte
         mainListView.setOnItemClickListener(this);
         mainListView.setEmptyView(findViewById(R.id.empty_view));
 
+        /* Getting and settoing the loader */
+        mLoader = (ProgressBar) findViewById(R.id.loading);
+
         /* Get subscribed event */
-        getEventToView getEventAsyncTask = new getEventToView(this, mainListView,
+        getEventToView getEventAsyncTask = new getEventToView(this, mainListView, mLoader,
                 getEventToView.REQUEST_SUBSCRIBED_EVENT);
         getEventAsyncTask.execute();
     }
@@ -37,7 +42,7 @@ public class SubscribedEventActivity extends AppCompatActivity implements Adapte
         String serializedObject = NetworkSingleton.getInstance(this).getGson().toJson(clickedEvent);
         //Log.i("Test", serializedObject);
         openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
-        getEventToView getEventAsyncTask = new getEventToView(this, mainListView,
+        getEventToView getEventAsyncTask = new getEventToView(this, mainListView, mLoader,
                 getEventToView.REQUEST_SUBSCRIBED_EVENT);
         getEventAsyncTask.execute();
         //startActivity(openDetail);

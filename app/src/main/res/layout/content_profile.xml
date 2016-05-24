@@ -32,7 +32,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:id="@+id/profile_picture"
-            android:src="@drawable/creator"
+            android:src="@drawable/ic_account_circle"
             useravatar:ua_border="true"
             useravatar:ua_border_color="#EEEEEE"
             useravatar:ua_border_width="2dp"
