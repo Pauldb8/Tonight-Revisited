@@ -1,9 +1,22 @@
 package info.debuck.tonight.EventClass;
 
+import android.content.Context;
+
+import info.debuck.tonight.NetworkSingleton;
+
 /**
  * User class
  */
 public class User {
+    /* Constant */
+    public static int FRIENDSHIP_STATUS_PENDING = 0;
+    public static int FRIENDSHIP_STATUS_MYSELF = 2;
+    public static int FRIENDSHIP_STATUS_FRIEND = 1;
+    public static int FRIENDSHIP_STATUS_BLOCKED = 3;
+    public static int FRIENDSHIP_STATUS_NOT_FRIEND = 4;
+
+
+
     private int id;
     private String name;
     private String lastName;
@@ -83,5 +96,10 @@ public class User {
 
     public void setPicture_url(String picture_url) {
         this.picture_url = picture_url;
+    }
+
+    /* This will return this actual class in JSONified format */
+    public String toJson (Context ctx){
+        return NetworkSingleton.getInstance(ctx).getGson().toJson(this);
     }
 }

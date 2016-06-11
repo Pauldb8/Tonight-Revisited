@@ -3,7 +3,8 @@
 
     <item>
         <bitmap
-            android:src="@drawable/splashimage"/>
+            android:src="@drawable/splashimage"
+            />
     </item>
 
 

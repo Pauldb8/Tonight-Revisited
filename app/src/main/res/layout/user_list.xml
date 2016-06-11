@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/paddingMedium"
+    android:paddingBottom="@dimen/paddingMedium"
+    android:paddingLeft="@dimen/paddingBig"
+    android:paddingRight="@dimen/paddingSmall"
+    android:background="@color/white">
+
+    <info.debuck.tonight.EventClass.UserAvatar
+        android:id="@+id/user_list_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_account_circle"/>
+
+    <TextView
+        android:id="@+id/user_list_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Firstname Lastname"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/marginSmall"/>
+</LinearLayout>

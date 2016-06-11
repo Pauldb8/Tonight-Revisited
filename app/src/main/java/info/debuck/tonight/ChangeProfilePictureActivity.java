@@ -2,10 +2,16 @@ package info.debuck.tonight;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -23,7 +29,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
@@ -36,12 +44,14 @@ import info.debuck.tonight.Tools.SessionManager;
 
 public class ChangeProfilePictureActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final int ADD_EV_OPEN_CAMERA = 8030;
     /* views */
     private ImageView ivChangeGallery;
     private ImageView ivChangeCamera;
     private Button btValidate;
     private UserAvatar civProfilePicture;
     private ProgressBar changeProgressBar;
+    private ImageView rotatePicture;
 
     /* vars */
     private String upload_url = "";
@@ -49,6 +59,7 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
     private User mUser;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    private Uri imageToUpload;
 
     public final int PICK_IMAGE_REQUEST = 1;
     public final String KEY_IMAGE = "image";
@@ -67,6 +78,7 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
         btValidate = (Button) findViewById(R.id.validate);
         civProfilePicture = (UserAvatar) findViewById(R.id.profile_picture);
         changeProgressBar = (ProgressBar) findViewById(R.id.changeProgressBar);
+        rotatePicture = (ImageView) findViewById(R.id.pictureRotate);
 
         /* setting vars */
         mUser = NetworkSingleton.getInstance(this).getConnectedUSer();
@@ -81,6 +93,7 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
         ivChangeCamera.setOnClickListener(this);
         ivChangeGallery.setOnClickListener(this);
         btValidate.setOnClickListener(this);
+        rotatePicture.setOnClickListener(this);
     }
 
 
@@ -94,9 +107,34 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
                 showFileChooser();
                 break;
 
+            case R.id.changeCamera:
+                takePicture();
+                break;
+
             case R.id.validate:
                 uploadImage();
                 break;
+
+            case R.id.pictureRotate:
+                if(bitmap  != null) {
+                    bitmap = rotateImage(bitmap, 90);
+                    civProfilePicture.setImageBitmap(bitmap);
+                }
+                break;
+        }
+    }
+
+
+    /**
+     * this method will start an activity taking a picture and load it
+     */
+    private void takePicture() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File f = new File(Environment.getExternalStorageDirectory(), "event_picture.jpg");
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        imageToUpload = Uri.fromFile(f);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, ADD_EV_OPEN_CAMERA);
         }
     }
 
@@ -125,6 +163,7 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             try {
+                //bitmap = rotateIfnecessary(bitmap, filePath);
                 //Getting the Bitmap from Gallery
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 //Setting the Bitmap to ImageView
@@ -133,6 +172,95 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
                 e.printStackTrace();
             }
         }
+
+        //We receive data from the CAMERA so we get back a picture
+        if (requestCode == ADD_EV_OPEN_CAMERA && resultCode == RESULT_OK) {
+            if(imageToUpload != null){
+                Uri selectedImage = imageToUpload;
+                getContentResolver().notifyChange(selectedImage, null);
+                Bitmap reducedSizeBitmap = getBitmap(imageToUpload.getPath());
+                if(reducedSizeBitmap != null){
+                    //bitmap = rotateIfnecessary(bitmap, imageToUpload);
+                    bitmap = reducedSizeBitmap;
+                    civProfilePicture.setImageBitmap(bitmap);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * This method checks the EXIF data of the picture and rotate it if necessary
+     * @param bitmap
+     * @param selectedImage
+     * @return
+     */
+    private Bitmap rotateIfnecessary(Bitmap bitmap, Uri selectedImage) {
+        ExifInterface ei = null;
+        try {
+            ei = new ExifInterface(getRealPathFromURI(this, selectedImage));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(ei != null) {
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            switch(orientation){
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    bitmap = rotateImage(bitmap, 90);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    bitmap = rotateImage(bitmap, 180);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    bitmap = rotateImage(bitmap, 270);
+                    break;
+            }
+
+            return bitmap;
+        }else {
+            return bitmap;
+        }
+
+    }
+
+    /**
+     * This methods returns the real path from a URI
+     * @param contentUri
+     * @return
+     */
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+
+    /**
+     * this method rotate the bitmap to the degrees asked
+     * @param source picture
+     * @param angle of rotation
+     * @return
+     */
+    private Bitmap rotateImage(Bitmap source, int angle) {
+        Bitmap retVal;
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        retVal = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+
+        return retVal;
     }
 
     /**
@@ -149,6 +277,10 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
     }
 
 
+    /**
+     * This method will transfomr the bitmap to a BASE64 string and upload it to the server
+     * associated with the user ID
+     */
     private void uploadImage(){
         //Showing the progress dialog
         final ProgressDialog loading = ProgressDialog.show(this,
@@ -213,4 +345,71 @@ public class ChangeProfilePictureActivity extends AppCompatActivity implements V
         /* adding to the request queue */
         mRequestQueue.add(uploadPicture);
     }
+
+    /**
+     * This method get a bitmap from a URI and downsize it to 1.2MP and returns it
+     * @param path
+     * @return
+     */
+    private Bitmap getBitmap(String path) {
+
+        Uri uri = Uri.fromFile(new File(path));
+        InputStream in = null;
+        try {
+            final int IMAGE_MAX_SIZE = 1200000; // 1.2MP
+            in = getContentResolver().openInputStream(uri);
+
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(in, null, o);
+            in.close();
+
+
+            int scale = 1;
+            while ((o.outWidth * o.outHeight) * (1 / Math.pow(scale, 2)) >
+                    IMAGE_MAX_SIZE) {
+                scale++;
+            }
+            Log.d("", "scale = " + scale + ", orig-width: " + o.outWidth + ", orig-height: " + o.outHeight);
+
+            Bitmap b = null;
+            in = getContentResolver().openInputStream(uri);
+            if (scale > 1) {
+                scale--;
+                // scale to max possible inSampleSize that still yields an image
+                // larger than target
+                o = new BitmapFactory.Options();
+                o.inSampleSize = scale;
+                b = BitmapFactory.decodeStream(in, null, o);
+
+                // resize to desired dimensions
+                int height = b.getHeight();
+                int width = b.getWidth();
+                Log.d("", "1th scale operation dimenions - width: " + width + ", height: " + height);
+
+                double y = Math.sqrt(IMAGE_MAX_SIZE
+                        / (((double) width) / height));
+                double x = (y / height) * width;
+
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, (int) x,
+                        (int) y, true);
+                b.recycle();
+                b = scaledBitmap;
+
+                System.gc();
+            } else {
+                b = BitmapFactory.decodeStream(in);
+            }
+            in.close();
+
+            Log.d("", "bitmap size - width: " + b.getWidth() + ", height: " +
+                    b.getHeight());
+            return b;
+        } catch (IOException e) {
+            Log.e("", e.getMessage(), e);
+            return null;
+        }
+    }
+
 }

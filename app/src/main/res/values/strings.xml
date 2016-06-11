@@ -76,10 +76,10 @@
     <string name="subscribed_event_activity_label">Mes inscriptions</string>
     <string name="menu_drawer_events_created">Mes créations</string>
     <string name="created_event_activity_label">Évènements que j\'ai crées</string>
-    <string name="title_activity_profile_and_friends">Mon compte</string>
+    <string name="title_activity_profile_and_friends">Information du compte</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="profile_tab_profile">Mon profil</string>
-    <string name="profile_tab_friends">Mes amis</string>
+    <string name="profile_tab_profile">Profil</string>
+    <string name="profile_tab_friends">Amis</string>
     <string name="empty_text">Il n\'y rien à voir ici.</string>
     <string name="url_event_foreign_keys">http://debuck.info/tonight/getForeignKeysEvent.php</string>
     <string name="event_category_cultural">Culturel</string>
@@ -128,4 +128,22 @@
     <string name="add_event_progress_title">Création de votre évènement</string>
     <string name="add_event_progress_subtitle">Veuillez patienter...</string>
     <string name="add_event_error_no_picture">Veuillez sélectionner une photo pour votre évènement.</string>
+    <string name="url_event_by_id">http://debuck.info/tonight/getSpecificEvent.php</string>
+    <string name="event_no_participant">Pas de participants</string>
+    <string name="get_user_subscribed_url">http://debuck.info/tonight/getEventSubscribedUsers.php</string>
+    <string name="event_detail_more_users">+ %d inscrit</string>
+    <string name="title_activity_subscribed_users">Participants</string>
+    <string name="url_user_friends">http://debuck.info/tonight/getUserFriends.php</string>
+    <string name="no_friends_text">Vous n\'avez pas encore d\'amis.</string>
+    <string name="profile_tab_my_profile">Mon profil</string>
+    <string name="profile_tab_my_friends">Mes amis</string>
+    <string name="profile_is_not_my_friend">Vous n\'êtes pas amis.</string>
+    <string name="profile_add_as_friend">Ajouter comme ami</string>
+    <string name="profile_remove_as_friend">Supprimer cet ami</string>
+    <string name="url_get_friendship_status">http://debuck.info/tonight/userIsFriendWith.php</string>
+    <string name="profile_is_my_friend">Vous êtes amis</string>
+    <string name="url_add_friend">http://debuck.info/tonight/addFriend.php</string>
+    <string name="profile_friend_request_sent">Demande d\'amitié envoyée</string>
+    <string name="profile_friend_request_sent_correctly">Demande d\'amitié envoyée.</string>
+    <string name="profile_friend_request_send_error">Impossible d\'ajouter cette personne pour le moment.</string>
 </resources>

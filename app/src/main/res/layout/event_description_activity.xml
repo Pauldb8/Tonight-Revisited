@@ -28,12 +28,6 @@
             android:scaleType="fitXY"
             xmlns:android="http://schemas.android.com/apk/res/android" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:id="@+id/lineSeparator0"/>
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -263,20 +257,56 @@
 
             </LinearLayout>
 
-            <View
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/FourthRow"
+                android:background="@color/white"
                 android:layout_below="@id/ThirdRow"
-                android:background="@android:color/darker_gray"
-                android:id="@+id/lineSeparator2"/>
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_people"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="14dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="14dp"
+                    android:tint="@color/colorPrimaryDark"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/event_participant"
+                        android:orientation="horizontal">
+
+
+                        <TextView
+                            android:id="@+id/event_no_participants"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/event_no_participant"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/primary_text" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ThirdRow"
+                android:layout_below="@+id/FourthRow"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/FourthRow"
+                android:id="@+id/FifthRow"
                 android:layout_marginBottom="10dp"
                 android:background="@color/white">
 
@@ -316,12 +346,12 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/FourthRow"
+                android:layout_below="@+id/FifthRow"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/fifthRow"
+                android:id="@+id/SixthRow"
                 android:background="@color/white"
                 android:padding="@dimen/paddingMedium"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_marginBottom="10dp">
 
                 <RelativeLayout
@@ -390,7 +420,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/event_post_list"
                 android:layout_marginBottom="10dp"
-                android:layout_below="@+id/fifthRow"
+                android:layout_below="@id/SixthRow"
                 android:divider="#00000000"
                 android:dividerHeight="10dp"
                 />

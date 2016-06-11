@@ -1,8 +1,9 @@
 package info.debuck.tonight;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -40,11 +41,8 @@ public class SubscribedEventActivity extends AppCompatActivity implements Adapte
         TonightEvent clickedEvent = (TonightEvent)parent.getAdapter().getItem(position);
         Intent openDetail = new Intent(this, EventDescriptionActivity.class);
         String serializedObject = NetworkSingleton.getInstance(this).getGson().toJson(clickedEvent);
-        //Log.i("Test", serializedObject);
+        Log.i("Test", serializedObject);
         openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
-        getEventToView getEventAsyncTask = new getEventToView(this, mainListView, mLoader,
-                getEventToView.REQUEST_SUBSCRIBED_EVENT);
-        getEventAsyncTask.execute();
-        //startActivity(openDetail);
+        startActivity(openDetail);
     }
 }
