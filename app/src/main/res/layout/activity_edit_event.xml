@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:useravatar="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".EditEventActivity">
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:background="@drawable/activity_profile_background">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/evDescPicture"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                xmlns:android="http://schemas.android.com/apk/res/android" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:layout_below="@+id/evDescPicture"
+                android:id="@+id/lineTitle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Title Event Description"
+                    android:id="@+id/evTitle"
+                    android:textColor="@color/icons"
+                    android:textStyle="bold"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:padding="10dp"
+                    android:gravity="center_horizontal"
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTitle"
+                    android:src="@drawable/ic_mode_edit"
+                    android:layout_toEndOf="@id/evTitle"
+                    android:paddingLeft="11dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="11dp"
+                    android:tint="@color/colorAccent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lineTitle"
+                android:id="@+id/firstRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcPeople"
+                        android:src="@drawable/ic_event"
+                        android:layout_gravity="left"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="14dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:tint="@color/colorPrimaryDark"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_event_date"
+                        android:layout_gravity="center_vertical"
+                        android:paddingEnd="@dimen/paddingSmall"
+                        android:textColor="@color/primary_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:id="@+id/evStartDate"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editDate"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/firstRow"
+                android:id="@+id/firstRowLine"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/firstRowLine"
+                android:id="@+id/secondRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evStartTimeIc"
+                        android:src="@drawable/ic_access_time_24"
+                        android:layout_gravity="left"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_event_start_time"
+                        android:layout_gravity="center_vertical"
+                        android:paddingEnd="@dimen/paddingSmall"
+                        android:textColor="@color/primary_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start time"
+                        android:id="@+id/evStartTime"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editStatus"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/secondRow"
+                android:id="@+id/secondRowLine"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/secondRowLine"
+                android:id="@+id/thirdRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcInfo"
+                        android:src="@drawable/ic_access_time_24"
+                        android:layout_gravity="left"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_event_end_time"
+                        android:layout_gravity="center_vertical"
+                        android:paddingEnd="@dimen/paddingSmall"
+                        android:textColor="@color/primary_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="heure de fin"
+                        android:id="@+id/evEndTime"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editInformation"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/thirdRow"
+                android:id="@+id/thirdRowLine"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/thirdRowLine"
+                android:id="@+id/fourthRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcPrice"
+                        android:src="@drawable/ic_action_creditcard"
+                        android:layout_gravity="left"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="7dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="7dp"
+                        android:paddingBottom="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_event_price"
+                        android:layout_gravity="center_vertical"
+                        android:paddingEnd="@dimen/paddingSmall"
+                        android:textColor="@color/primary_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gratuit"
+                        android:id="@+id/evPrice"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editPrice"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/fourthRow"
+                android:id="@+id/fourthRowLine"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fourthRowLine"
+                android:id="@+id/fifthRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/icLabel"
+                        android:src="@drawable/ic_label"
+                        android:layout_gravity="left"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="12dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_event_category"
+                        android:layout_gravity="center_vertical"
+                        android:paddingEnd="@dimen/paddingSmall"
+                        android:textColor="@color/primary_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Festival"
+                        android:id="@+id/evLabel"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editLabel"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Localisation -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/fifthRow"
+                android:id="@+id/fifthRowLine"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fifthRowLine"
+                android:id="@+id/sixthRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcLocalisation"
+                        android:src="@drawable/ic_location"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="13dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="13dp"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_event_localisation"
+                        android:layout_gravity="center_vertical"
+                        android:paddingEnd="@dimen/paddingSmall"
+                        android:textColor="@color/primary_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Position"
+                        android:id="@+id/evLocalisation"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editLocalisation"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- participants -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/sixthRow"
+                android:id="@+id/seventhRowLine"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seventhRowLine"
+                android:id="@+id/eightRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcParticipants"
+                        android:src="@drawable/ic_people"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_event_participants"
+                        android:layout_gravity="center_vertical"
+                        android:paddingEnd="@dimen/paddingSmall"
+                        android:textColor="@color/primary_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Illimté"
+                        android:id="@+id/evParticipants"
+                        android:textColor="@color/primary_text"
+                        android:layout_gravity="center_vertical" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editParticipants"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <!-- description -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/eightRow"
+                android:id="@+id/eightRowLine"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/eightRowLine"
+                android:id="@+id/ninthRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcDescription"
+                        android:src="@drawable/ic_info"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Beaucoup de texte sur plusieurs lignes est-ce que je peux tester ça d'une quelconque façon ou est-ce impensable entièrement ? Excellente question cependant."
+                        android:id="@+id/evDescription"
+                        android:textColor="@color/primary_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editDescription"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

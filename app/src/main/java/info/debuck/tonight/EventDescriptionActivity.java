@@ -2,10 +2,15 @@ package info.debuck.tonight;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -14,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.Request;
@@ -30,6 +36,7 @@ import java.util.Calendar;
 
 import info.debuck.tonight.EventClass.IsSubscribedRequest;
 import info.debuck.tonight.EventClass.SubscriptionRequest;
+import info.debuck.tonight.EventClass.TonightReportDialog;
 import info.debuck.tonight.EventClass.TonightEvent;
 import info.debuck.tonight.EventClass.TonightEventForeignKeys;
 import info.debuck.tonight.EventClass.TonightEventPost;
@@ -43,6 +50,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
 
     private static final int TONIGHT_SUBSCRIBE = 2;
     private static final int TONIGHT_UNSUBSCRIBE = 3;
+    public static String TONIGHT_INTENT_USER_DETAILS = "tonight_intent_user_details";
     /* Layout properties */
     private NetworkImageView evDescPicture;
     private TextView evTitle;
@@ -58,14 +66,17 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     private ViewSwitcher viewSwitcher;
     private TextView sendWritePost;
     private ListView lvEventListPost;
+    private LinearLayout llEventParticipants;
+    private LinearLayout llFourthRow;
     private UserAvatar userAvatar;
 
     /* TonightEvent properties */
-    private Gson gson;
+    private Gson mGson;
     private String serializedObject;
     private TonightEvent event;
     private TonightEventForeignKeys eventFK;
     private User mUser;
+    private User[] mParticipants;
 
     /* Network Singleton information */
     private ImageLoader mImageLoader;
@@ -73,7 +84,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     SessionManager sessionManager;
 
     //Pour formater la date en Sam. 21 Jan 2015 à 21:05
-    private SimpleDateFormat fDateAndTimeEvent = new SimpleDateFormat("EEE d MMM yyyy à hh:mm");
+    private SimpleDateFormat fDateAndTimeEvent = new SimpleDateFormat("EEE d MMM yyyy à HH:mm");
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /** We will load the received extra intent and associate it with the views */
@@ -81,6 +92,13 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_description_activity);
+
+        /* Setting transparent toolbar */
+        if (((Toolbar) findViewById(R.id.toolbar)) != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ((Toolbar) findViewById(R.id.toolbar)).setBackground(getDrawable(R.drawable.background_toolbar_translucent));
+            }
+        }
 
         sessionManager = new SessionManager(this);
 
@@ -96,16 +114,104 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         evUnsubscribe = (TextView) findViewById(R.id.unsubscribe);
         viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher);
         evCategory = (TextView) findViewById(R.id.evCategory);
-        llWritePost = (LinearLayout) findViewById(R.id.fifthRow);
+        llWritePost = (LinearLayout) findViewById(R.id.SixthRow);
+        llFourthRow = (LinearLayout) findViewById(R.id.FourthRow);
+        llEventParticipants = (LinearLayout) findViewById(R.id.event_participant);
         sendWritePost = (TextView) findViewById(R.id.sendWritePost);
         lvEventListPost = (ListView) findViewById(R.id.event_post_list);
         userAvatar = (UserAvatar) findViewById(R.id.uaProfilePicture);
 
         /* Getting the serialized TonightEvent object from the intent extra and creating an instance
         * of TonightEvent from it */
-        gson = NetworkSingleton.getInstance(this).getGson();
-        serializedObject = getIntent().getStringExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC);
-        event = gson.fromJson(serializedObject, TonightEvent.class);
+        mGson = NetworkSingleton.getInstance(this).getGson();
+
+        /* Getting the loader information from Network Singleton */
+        mImageLoader = NetworkSingleton.getInstance(this.getApplicationContext()).getImageLoader();
+        mRequestQueue = NetworkSingleton.getInstance(this).getRequestQueue();
+
+        /* Getting the event to show, wheter by dejsonified extra or by downloading with the id */
+        if(getIntent().hasExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC)) {
+            serializedObject = getIntent().getStringExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC);
+            event = mGson.fromJson(serializedObject, TonightEvent.class);
+            fillDetails();
+        }
+
+        /* If we only got the id from the event, we proceed to download it */
+        else if(getIntent().hasExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC_ID)){
+            int id = getIntent().getIntExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC_ID, 0);
+            GsonRequest<TonightEvent> getEvent = new GsonRequest<>(
+                    getString(R.string.url_event_by_id) + "?event_id=" + id,
+                    TonightEvent.class,
+                    new Response.Listener<TonightEvent>() {
+                        @Override
+                        public void onResponse(TonightEvent response) {
+                            /* Getting the event back */
+                            event = response;
+                            /* filling the views with the event informaiton */
+                            fillDetails();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i("EDA", "Did NOT receive event" + error.getMessage());
+                        }
+                    },
+                    this);
+            mRequestQueue.add(getEvent);
+        }
+
+
+
+        /* Don't show the keyboard at first */
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
+
+    /** We inflate the menu */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        /* If user is creator, then show modifiy button, else don't */
+        if(sessionManager.isLoggedIn() && sessionManager.getUser().getId() == event.getUser_id()) {
+            getMenuInflater().inflate(R.menu.event_description_menu_author, menu);
+        }else{
+            getMenuInflater().inflate(R.menu.event_description_menu, menu);
+        }
+        return true;
+    }
+    /**
+     * Once we got the information from a specific event, we fill the views
+     */
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.event_description_report) {
+            TonightReportDialog dialog = new TonightReportDialog();
+            dialog.show(getSupportFragmentManager(), "EventDescriptionActivity");
+        }
+        else if (id == R.id.event_description_modify){
+            /* We'll create an intent with the event and event location as extra */
+            if(event != null && eventFK != null) {
+                Intent openDetail = new Intent(this, ManageEventActivity.class);
+                String serializedObject = mGson.toJson(event);
+                String serializedObjectFK = mGson.toJson(eventFK);
+                //Log.i("Test", serializedObject);
+                openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
+                openDetail.putExtra(ManageEventActivity.TONIGHT_INTENT_EXTRA_DESC_FK, serializedObjectFK);
+                startActivity(openDetail);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void fillDetails() {
         /* Get the foreign keys of the event thanks to a volley request */
         GsonRequest<TonightEventForeignKeys> fkrequest = new GsonRequest<TonightEventForeignKeys>(
                 getString(R.string.url_event_foreign_keys) + "?id=" + event.get_ID(),
@@ -127,16 +233,18 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
                     }
                 }, this);
 
-
-        /* Getting the loader information from Network Singleton */
-        mImageLoader = NetworkSingleton.getInstance(this.getApplicationContext()).getImageLoader();
-        mRequestQueue = NetworkSingleton.getInstance(this).getRequestQueue();
-
         /* Adding the request to the request queue */
         mRequestQueue.add(fkrequest);
 
-        /* getting user information */
         mUser = NetworkSingleton.getInstance(this).getConnectedUSer();
+        /* getting user information, only if user is connected */
+        if(sessionManager.isLoggedIn()){
+            NetworkSingleton.getInstance(this).setConnectedUSer(sessionManager.getUser());
+            userAvatar.setImageUrl(mUser.getPicture_url(), mImageLoader);
+            showWritePost();
+            showSubscribeOrUnsubscribe();
+        }
+
 
         /* Associating information from the event object to its respective views */
         evDescPicture.setImageUrl(event.getPicture_url(), mImageLoader);
@@ -144,9 +252,9 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         evStartDate.setText(event.getStartDateFormatted());
         evPrice.setText(event.getPriceFormatted());
         evStartTime.setText(event.getStartHour());
-        //todo: evLocation.setText(event.get);
         evDescription.setText(Html.fromHtml(refactorText(event.getDescription())));
-        userAvatar.setImageUrl(mUser.getPicture_url(), mImageLoader);
+
+        setParticipantView(llEventParticipants);
 
         /* Adding click listeners */
         evSubscribe.setOnClickListener(this);
@@ -154,17 +262,89 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         sendWritePost.setOnClickListener(this);
         evLocation.setOnClickListener(this);
         lvEventListPost.setOnItemClickListener(this);
+        llFourthRow.setOnClickListener(this);
 
         /* We get the post the this event and download and show them asynchronously */
         getPostEventToView getEventPostAsyncTask = new getPostEventToView(this, lvEventListPost,
                 getPostEventToView.REQUEST_PARENT_POST, event.get_ID());
         getEventPostAsyncTask.execute();
+        lvEventListPost.setOnItemClickListener(this);
+    }
 
-        showSubscribeOrUnsubscribe();
-        showWritePost();
 
-        /* Don't show the keyboard at first */
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    /**
+     * This method will get the users subscribed to this event and put them in their view
+     * @param llEventParticipants
+     */
+    private void setParticipantView(LinearLayout llEventParticipants) {
+        /* Getting the subscribed users */
+        final User[] subscribedUser = null;
+        String getUserUrl = getString(R.string.get_user_subscribed_url);
+
+        GsonRequest<User[]> getSubscridedUser = new GsonRequest<User[]>(
+                getUserUrl + "?event_id=" + event.get_ID(),
+                User[].class,
+                new Response.Listener<User[]>() {
+                    @Override
+                    public void onResponse(User[] response) {
+                        mParticipants = response;
+                        fillViewWithParticipants(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("EDA", "Couldn't get subscribed users.");
+                    }
+                },
+                this);
+
+        mRequestQueue.add(getSubscridedUser);
+    }
+
+
+    /**
+     * This method will place the retrieved user in the view where they belong
+     * @param subscribedUsers
+     */
+    private void fillViewWithParticipants(User[] subscribedUsers) {
+        /* if there is at least 1 user, the response is not null */
+        if(subscribedUsers != null){
+            int maxUsers = 5; /* How many partcipants are we going to display */
+            /* First hide the no participants view */
+            ((TextView) findViewById(R.id.event_no_participants)).setVisibility(View.GONE);
+
+            /* We create the view that are going  to add */
+            for(int i = 0; i < Math.min(subscribedUsers.length, maxUsers); i++){
+                User currentUser = subscribedUsers[i];
+
+                UserAvatar picture = new UserAvatar(this);
+                picture.setImageUrl(currentUser.getPicture_url(), mImageLoader);
+                picture.setLayoutParams(new ActionBar.LayoutParams(100, 100));
+
+                ((LinearLayout) findViewById(R.id.event_participant)).addView(picture);
+            }
+
+            /* this show that there are more partcipants */
+            if(subscribedUsers.length > maxUsers){
+                TextView moreUsers = new TextView(this);
+                if(subscribedUsers.length-maxUsers > 1)
+                    moreUsers.setText(String.format(getString(R.string.event_detail_more_users),
+                        subscribedUsers.length-maxUsers) + "s");
+                else
+                    moreUsers.setText(String.format(getString(R.string.event_detail_more_users),
+                            subscribedUsers.length-maxUsers));
+                LinearLayout.LayoutParams params =
+                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.gravity = Gravity.CENTER;
+                params.setMargins(32, 0, 0, 0);
+
+                moreUsers.setLayoutParams(params);
+                moreUsers.setTextColor(getResources().getColor(R.color.primary_text));
+                ((LinearLayout) findViewById(R.id.event_participant)).addView(moreUsers);
+            }
+        }
     }
 
     public String refactorText(String originalText){
@@ -276,6 +456,15 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
             case R.id.sendWritePost:
                 trySendPost();
                 break;
+            case R.id.FourthRow:
+                /* Creating the JSONIFIED object of user array */
+                Intent viewUsersDetail = new Intent(this, SubscribedUsersActivty.class);
+                String usersArray = NetworkSingleton.getInstance(this).getGson().
+                        toJson(mParticipants);
+                viewUsersDetail.putExtra(EventDescriptionActivity.TONIGHT_INTENT_USER_DETAILS,
+                        usersArray);
+                startActivityForResult(viewUsersDetail, 3 );
+                break;
         }
     }
 
@@ -330,7 +519,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
      */
     public void showWritePost(){
         /* Si on est connecté */
-        if(sessionManager.isLoggedIn()){
+        if(sessionManager.isLoggedIn() || mUser != null){
             llWritePost.setVisibility(View.VISIBLE);
         }else {
             llWritePost.setVisibility(View.GONE);
@@ -394,6 +583,19 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        int viewId = view.getId();
 
+        /* The user clicked the name or avatar of a participant's post */
+        if(viewId == R.id.event_post_full_name || viewId == R.id.uaProfilePicture){
+            /* the user clicked on the name or avatar of a participant */
+            Intent openDetail = new Intent(this, ProfileAndFriendsActivity.class);
+
+            /* Getting the user info */
+            String serializedObject = mGson.toJson(((EventPostCustomAdapter)parent.getAdapter())
+                    .getmUser(position));
+            //Log.i("Test", serializedObject);
+            openDetail.putExtra(ProfileAndFriendsActivity.SHOW_OTHER_USER_PROFILE, serializedObject);
+            startActivityForResult(openDetail, 0);
+        }
     }
 }

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:useravatar="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ManageEventActivity">
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:background="@drawable/activity_profile_background">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/evDescPicture"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                xmlns:android="http://schemas.android.com/apk/res/android" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title Event Description"
+                android:id="@+id/evTitle"
+                android:layout_below="@+id/evDescPicture"
+                android:layout_centerHorizontal="true"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/icons"
+                android:textStyle="bold"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:padding="10dp"
+                android:gravity="center_horizontal"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/evTitle"
+                android:id="@+id/firstRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcPeople"
+                        android:src="@drawable/ic_people"
+                        android:layout_gravity="left"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="14dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:tint="@color/colorPrimaryDark"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Participants"
+                        android:id="@+id/evPartcipants"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editParticipants"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/firstRow"
+                android:id="@+id/firstRowLine"/>
+
+            <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/firstRowLine"
+            android:id="@+id/secondRow"
+            android:layout_centerHorizontal="true"
+            android:background="@color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcPrice"
+                        android:src="@drawable/ic_event"
+                        android:layout_gravity="left"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/manage_event_status"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text"
+                        android:paddingEnd="@dimen/paddingSmall"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OPEN"
+                        android:id="@+id/evStatus"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editStatus"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/secondRow"
+                android:id="@+id/secondRowLine"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/secondRowLine"
+                android:id="@+id/thirdRow"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/evIcInfo"
+                        android:src="@drawable/ic_info"
+                        android:layout_gravity="left"
+                        android:tint="@color/colorPrimaryDark"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Change event information"
+                        android:id="@+id/evInfo"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/primary_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editInformation"
+                        android:src="@drawable/ic_mode_edit"
+                        android:layout_gravity="right"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="14dp"
+                        android:tint="@color/colorAccent"/>
+                </LinearLayout>
+
+            </LinearLayout>
+         </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

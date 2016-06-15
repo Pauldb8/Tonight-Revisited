@@ -1,111 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:useravatar="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context="info.debuck.tonight.ProfileActivity"
-    tools:showIn="@layout/activity_profile"
     android:background="@drawable/activity_profile_background"
-    android:tileMode="repeat">
+    android:tileMode="repeat"
+    android:id="@+id/container">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:id="@+id/firstRow"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:background="@color/colorPrimaryDark"
-            android:elevation="4dp">
-
-        <info.debuck.tonight.EventClass.UserAvatar
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:id="@+id/profile_picture"
-            android:src="@drawable/ic_account_circle"
-            useravatar:ua_border="true"
-            useravatar:ua_border_color="#EEEEEE"
-            useravatar:ua_border_width="2dp"
-            android:layout_gravity="center_horizontal" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/editProfile"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_mode_edit"
-                android:tint="@color/colorPrimaryLight"
-                android:layout_marginLeft="75dp"
-                android:layout_marginTop="-24dp" />
-
-            <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Name"
-            android:id="@+id/profile_name"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Small Text"
-            android:id="@+id/profile_profile"
-            android:textColor="@color/white"
-            android:layout_gravity="center_horizontal" />
-
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/secondRow"
-            android:background="@color/white" >
-
-            <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageView
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:id="@+id/firstRow"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:background="@color/colorPrimaryDark"
+                    android:elevation="4dp">
+
+                <info.debuck.tonight.EventClass.UserAvatar
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/profile_picture"
+                    android:src="@drawable/ic_account_circle"
+                    useravatar:ua_border="true"
+                    useravatar:ua_border_color="#EEEEEE"
+                    useravatar:ua_border_width="2dp"
+                    android:layout_gravity="center_horizontal" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editProfile"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/ic_mode_edit"
+                        android:tint="@color/colorPrimaryLight"
+                        android:layout_marginLeft="75dp"
+                        android:layout_marginTop="-24dp"
+                        android:visibility="gone"/>
+
+                    <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageView2"
-                    android:src="@drawable/ic_email"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="14dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="14dp"
-                    android:tint="@color/colorPrimaryDark" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Name"
+                    android:id="@+id/profile_name"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/white"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Medium Text"
-                    android:color="@color/colorPrimaryDark"
-                    android:id="@+id/profile_email"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/primary_text" />
+                    android:text="Small Text"
+                    android:id="@+id/profile_profile"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="invisible"/>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/secondRow"
+                    android:background="@color/white" >
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/imageView2"
+                            android:src="@drawable/ic_email"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="14dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="14dp"
+                            android:tint="@color/colorPrimaryDark" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="Medium Text"
+                            android:color="@color/colorPrimaryDark"
+                            android:id="@+id/profile_email"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/primary_text" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
             </LinearLayout>
-        </LinearLayout>
 
+    </ScrollView>
 
-    </LinearLayout>
-
-</ScrollView>
+</RelativeLayout>

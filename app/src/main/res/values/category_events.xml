@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Spinner pour create event, defaults -->
-    <string-array name="category_event">
-        <item>Culturel</item>
-        <item>Musique</item>
-        <item>Atelier</item>
-        <item>Soirée</item>
-        <item>Bar / Restaurant</item>
-        <item>Festival</item>
-        <item>Réunion</item>
-        <item>Autre</item>
-    </string-array>
+<!-- Spinner pour create event, defaults -->
+<string-array name="category_event">
+    <item>Culturel</item>
+    <item>Musique</item>
+    <item>Atelier</item>
+    <item>Soirée</item>
+    <item>Bar / Restaurant</item>
+    <item>Festival</item>
+    <item>Réunion</item>
+    <item>Autre</item>
+</string-array>
 </resources>

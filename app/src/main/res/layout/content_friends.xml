@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="0dp"
+    android:background="@drawable/activity_profile_background"
+    android:tileMode="repeat">
+
+    <ListView
+        android:id="@+id/list_user_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></ListView>
+
+    <LinearLayout
+        android:id="@+id/empty_friend_view"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/tumbleweed"
+            android:tint="@color/colorPrimary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/no_friends_text"
+            android:id="@+id/empty_text"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"/>
+    </LinearLayout>
+
+</RelativeLayout>

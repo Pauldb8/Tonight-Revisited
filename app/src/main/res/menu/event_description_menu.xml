@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/event_description_report"
+        android:orderInCategory="100"
+        android:title="@string/report_abuse"
+        appcompat:showAsAction="never" />
+</menu>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spinner pour create event, defaults -->
+    <string-array name="status_events">
+        <item>No status</item>
+        <item>Ouvert</item>
+        <item>Terminé</item>
+        <item>Annulé</item>
+        <item>Repoussé</item>
+        <item>Brouillon</item>
+    </string-array>
+
+    <string-array name="change_status_events">
+        <item>Ouvert</item>
+        <item>Terminé</item>
+        <item>Annulé</item>
+    </string-array>
+</resources>

@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
 
     public static final String TONIGHT_INTENT_EXTRA_DESC = "tonight.intent.extra_desc";
     public static final String TONIGHT_INTENT_EXTRA_LOGIN = "tonight.intent.extra_login";
+    public static final String TONIGHT_INTENT_EXTRA_DESC_ID = "tonight.intent.extra_desc_id";
     static final int TONIGHT_AUTH_REQUEST = 8020;  // The request code
     private ListView mainListView = null;
     private ProgressBar mainLoader = null;
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+       /* getSupportActionBar().setDisplayShowTitleEnabled(false);*/
 
         /* Setting up the toolbar anyway */
         MaterialSpinnerAdapter adapter = new MaterialSpinnerAdapter(this);
@@ -357,7 +359,7 @@ public class MainActivity extends AppCompatActivity
         if(selectedCity.equals("Louvain-La-Neuve")){
             mainListView.setAdapter(null);
             getEventToView getEventAsyncTask = new getEventToView(this, mainListView, mainLoader,
-                    getEventToView.REQUEST_EVENT_FROM_CITY, 2);
+                    getEventToView.REQUEST_EVENT_FROM_CITY, 100);
             getEventAsyncTask.execute();
         }
         else if (selectedCity.equals("Bruxelles")){
