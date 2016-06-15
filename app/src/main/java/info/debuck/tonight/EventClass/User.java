@@ -25,14 +25,18 @@ public class User {
     private String picture_url;
     private int profile_id;
 
+    private int friend_status;
+
     /* public constructor for a user */
-    public User(int id, String name, String email, String password, String picture_url, int profile_id){
+    public User(int id, String name, String email, String password, String picture_url,
+                int profile_id, int friend_status){
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.picture_url = picture_url;
         this.profile_id = profile_id;
+        this.friend_status = friend_status;
     }
 
     /** Getters and Setters */
@@ -96,6 +100,14 @@ public class User {
 
     public void setPicture_url(String picture_url) {
         this.picture_url = picture_url;
+    }
+
+    public int getFriend_status() {
+        return friend_status;
+    }
+
+    public void setFriend_status(int friend_status) {
+        this.friend_status = friend_status;
     }
 
     /* This will return this actual class in JSONified format */

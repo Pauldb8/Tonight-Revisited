@@ -81,7 +81,7 @@
 
                     android:tint="@color/colorPrimaryDark" />
 
-                <ImageView
+                <!--<ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/evIcTime"
@@ -92,7 +92,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:padding="10dp"
-                    android:tint="@color/colorPrimaryDark" />
+                    android:tint="@color/colorPrimaryDark" />-->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -102,7 +102,11 @@
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/colorPrimaryDark"
                     android:typeface="sans"
-                    android:fontFamily="sans-serif-light"/>
+                    android:fontFamily="sans-serif-light"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="10dp"/>
 
             </LinearLayout>
 

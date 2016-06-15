@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/dialog_change_status_title"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/paddingSmall"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/dialog_change_status_subtitle"
+        android:id="@+id/textView4"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/paddingBig"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:focusable="false"
+        android:entries="@array/change_status_events"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/change_status_dialog_subtitle"
+        android:visibility="gone"
+        android:padding="@dimen/paddingBig" />
+
+</LinearLayout>

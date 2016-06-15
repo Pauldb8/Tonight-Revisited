@@ -1,11 +1,15 @@
 package info.debuck.tonight;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
+import info.debuck.tonight.EventClass.TonightEvent;
 
 public class CreatedEventActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -33,6 +37,11 @@ public class CreatedEventActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        TonightEvent clickedEvent = (TonightEvent)parent.getAdapter().getItem(position);
+        Intent openDetail = new Intent(this, EventDescriptionActivity.class);
+        String serializedObject = NetworkSingleton.getInstance(this).getGson().toJson(clickedEvent);
+        Log.i("Test", serializedObject);
+        openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
+        startActivity(openDetail);
     }
 }

@@ -45,18 +45,18 @@
                 android:textSize="20sp"
                 tools:ignore="HardcodedText" />
 
-            <View
+            <!--<View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@id/evTitle"
                 android:background="@android:color/darker_gray"
-                android:id="@+id/lineSeparator1"/>
+                android:id="@+id/lineSeparator1"/>-->
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/lineSeparator1"
+                android:layout_below="@+id/evTitle"
                 android:id="@+id/firstRow"
                 android:layout_centerHorizontal="true"
                 android:background="@color/white"
@@ -164,7 +164,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:layout_weight="1" >
+                    android:layout_weight="1"
+                    android:visibility="invisible">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -235,7 +236,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/evIcLocation"
-                        android:src="@drawable/ic_edit_location"
+                        android:src="@drawable/ic_location"
                         android:paddingLeft="10dp"
                         android:paddingTop="14dp"
                         android:paddingRight="10dp"
@@ -330,7 +331,6 @@
                     android:layout_weight="8"
                     android:layout_gravity="bottom"
                     android:textSize="15sp"
-                    android:textColor="@color/secondary_text"
                     android:padding="10dp" />
 
                 <View
@@ -341,18 +341,45 @@
 
             </LinearLayout>
 
-        <!-- This view will be dynamically changed to add the post for the event -->
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/FifthRow"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/SixthRow"
+                android:paddingBottom="@dimen/paddingSmall"
+                android:background="@color/white">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    android:id="@+id/lineSeparator1"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:text="@string/event_detail_comments"
+                    android:id="@+id/evComments"
+                    android:layout_weight="1"
+                    android:layout_gravity="top"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textColor="@color/primary_text"
+                    android:layout_marginTop="10dp" />
+            </LinearLayout>
+
+        <!-- This view will be dynamically changed to add the post for the event -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/SixthRow"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/SeventhRow"
                 android:background="@color/white"
                 android:padding="@dimen/paddingMedium"
-                android:visibility="gone"
-                android:layout_marginBottom="10dp">
+                android:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
@@ -389,7 +416,7 @@
 
                             <EditText
                                 android:layout_width="fill_parent"
-                                android:layout_height="0dp"
+                                android:layout_height="wrap_content"
                                 android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
                                 android:ems="10"
                                 android:hint="@string/ev_desc_express_yourself"
@@ -397,16 +424,17 @@
                                 android:layout_weight="1"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:nextFocusUp="@id/etWritePost"
-                                android:nextFocusLeft="@id/etWritePost"/>
+                                android:nextFocusLeft="@id/etWritePost"
+                                android:textColorHint="@color/primary_text" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:text="@string/send"
                                 android:id="@+id/sendWritePost"
                                 android:layout_gravity="end"
-                                android:layout_marginTop="@dimen/paddingBig"
+                                android:layout_marginTop="@dimen/paddingSmall"
                                 android:textColor="@color/colorAccent" />
 
                         </LinearLayout>
@@ -419,10 +447,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/event_post_list"
-                android:layout_marginBottom="10dp"
-                android:layout_below="@id/SixthRow"
+                android:layout_below="@id/SeventhRow"
                 android:divider="#00000000"
-                android:dividerHeight="10dp"
+                android:dividerHeight="0dp"
                 />
 
             <RelativeLayout

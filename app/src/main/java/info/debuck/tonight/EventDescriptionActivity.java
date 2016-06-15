@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -34,6 +36,7 @@ import java.util.Calendar;
 
 import info.debuck.tonight.EventClass.IsSubscribedRequest;
 import info.debuck.tonight.EventClass.SubscriptionRequest;
+import info.debuck.tonight.EventClass.TonightReportDialog;
 import info.debuck.tonight.EventClass.TonightEvent;
 import info.debuck.tonight.EventClass.TonightEventForeignKeys;
 import info.debuck.tonight.EventClass.TonightEventPost;
@@ -68,7 +71,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     private UserAvatar userAvatar;
 
     /* TonightEvent properties */
-    private Gson gson;
+    private Gson mGson;
     private String serializedObject;
     private TonightEvent event;
     private TonightEventForeignKeys eventFK;
@@ -120,7 +123,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
 
         /* Getting the serialized TonightEvent object from the intent extra and creating an instance
         * of TonightEvent from it */
-        gson = NetworkSingleton.getInstance(this).getGson();
+        mGson = NetworkSingleton.getInstance(this).getGson();
 
         /* Getting the loader information from Network Singleton */
         mImageLoader = NetworkSingleton.getInstance(this.getApplicationContext()).getImageLoader();
@@ -129,7 +132,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         /* Getting the event to show, wheter by dejsonified extra or by downloading with the id */
         if(getIntent().hasExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC)) {
             serializedObject = getIntent().getStringExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC);
-            event = gson.fromJson(serializedObject, TonightEvent.class);
+            event = mGson.fromJson(serializedObject, TonightEvent.class);
             fillDetails();
         }
 
@@ -164,9 +167,50 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
+    /** We inflate the menu */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        /* If user is creator, then show modifiy button, else don't */
+        if(sessionManager.isLoggedIn() && sessionManager.getUser().getId() == event.getUser_id()) {
+            getMenuInflater().inflate(R.menu.event_description_menu_author, menu);
+        }else{
+            getMenuInflater().inflate(R.menu.event_description_menu, menu);
+        }
+        return true;
+    }
     /**
      * Once we got the information from a specific event, we fill the views
      */
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.event_description_report) {
+            TonightReportDialog dialog = new TonightReportDialog();
+            dialog.show(getSupportFragmentManager(), "EventDescriptionActivity");
+        }
+        else if (id == R.id.event_description_modify){
+            /* We'll create an intent with the event and event location as extra */
+            if(event != null && eventFK != null) {
+                Intent openDetail = new Intent(this, ManageEventActivity.class);
+                String serializedObject = mGson.toJson(event);
+                String serializedObjectFK = mGson.toJson(eventFK);
+                //Log.i("Test", serializedObject);
+                openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
+                openDetail.putExtra(ManageEventActivity.TONIGHT_INTENT_EXTRA_DESC_FK, serializedObjectFK);
+                startActivity(openDetail);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void fillDetails() {
         /* Get the foreign keys of the event thanks to a volley request */
         GsonRequest<TonightEventForeignKeys> fkrequest = new GsonRequest<TonightEventForeignKeys>(
@@ -195,6 +239,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         mUser = NetworkSingleton.getInstance(this).getConnectedUSer();
         /* getting user information, only if user is connected */
         if(sessionManager.isLoggedIn()){
+            NetworkSingleton.getInstance(this).setConnectedUSer(sessionManager.getUser());
             userAvatar.setImageUrl(mUser.getPicture_url(), mImageLoader);
             showWritePost();
             showSubscribeOrUnsubscribe();
@@ -546,7 +591,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
             Intent openDetail = new Intent(this, ProfileAndFriendsActivity.class);
 
             /* Getting the user info */
-            String serializedObject = gson.toJson(((EventPostCustomAdapter)parent.getAdapter())
+            String serializedObject = mGson.toJson(((EventPostCustomAdapter)parent.getAdapter())
                     .getmUser(position));
             //Log.i("Test", serializedObject);
             openDetail.putExtra(ProfileAndFriendsActivity.SHOW_OTHER_USER_PROFILE, serializedObject);

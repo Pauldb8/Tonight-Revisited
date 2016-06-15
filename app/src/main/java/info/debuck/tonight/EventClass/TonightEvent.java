@@ -1,8 +1,13 @@
 package info.debuck.tonight.EventClass;
 
+import android.content.Context;
+import android.text.Html;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import info.debuck.tonight.NetworkSingleton;
 
 /**
  * Public class containing all the information relative to a TonightEvent, the names of the
@@ -126,6 +131,7 @@ public class TonightEvent {
         return max_people;
     }
 
+
     public void setMax_people(int max_people) {
         this.max_people = max_people;
     }
@@ -134,7 +140,7 @@ public class TonightEvent {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -226,4 +232,11 @@ public class TonightEvent {
         return this._ID + ": " + this.name + ", le " + this.start_date + " - " + this.description;
     }
 
+    public String toJson(Context mContext) {
+        return NetworkSingleton.getInstance(mContext).getGson().toJson(this);
+    }
+
+    public String getDescriptionFormatted() {
+        return Html.fromHtml(getDescription()).toString();
+    }
 }

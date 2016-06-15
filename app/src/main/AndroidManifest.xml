@@ -47,8 +47,8 @@
         <activity
             android:name=".EventDescriptionActivity"
             android:label="@string/title_activity_description"
-            android:parentActivityName=".MainActivity"
             android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity"
             app:popupTheme="@style/AppTheme.PopupOverlay">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -138,10 +138,30 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".SubscribedUsersActivty"
+        <activity
+            android:name=".SubscribedUsersActivty"
             android:label="@string/title_activity_subscribed_users"
-            android:parentActivityName=".EventDescriptionActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:parentActivityName=".EventDescriptionActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.debuck.tonight.EventDescriptionActivity" />
+        </activity>
+        <activity
+            android:name=".EditEventActivity"
+            android:label="@string/edit_event_activity_title"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ManageEventActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.debuck.tonight.ManageEventActivity" />
+        </activity>
+
+        <activity
+            android:name=".ManageEventActivity"
+            android:label="@string/title_activity_manage_events"
+            android:launchMode="singleTop"
+            android:parentActivityName=".EventDescriptionActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="info.debuck.tonight.EventDescriptionActivity" />

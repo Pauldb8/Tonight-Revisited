@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -29,6 +30,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -279,7 +281,7 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
+    public static class PlaceholderFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -291,6 +293,7 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
         private UserProfile mUserProfile;
         private ImageLoader mImageLoader;
         private RequestQueue mRequestQueue;
+        private Gson mGson;
 
         /* Views */
         /* Profile Fragment views */
@@ -336,6 +339,7 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
             isMyProfile = getArguments().getBoolean(ARG_IS_MY_PROFILE);
             mUser = NetworkSingleton.getInstance(getActivity().getApplicationContext()).getGson()
                 .fromJson(getArguments().getString(ARG_USER_INFO), User.class);
+            mGson = NetworkSingleton.getInstance(getActivity().getApplicationContext()).getGson();
 
             View rootView;
 
@@ -434,6 +438,9 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
                     getActivity().getApplicationContext());
 
             mRequestQueue.add(getFriends);
+
+            /* OnItemClickListener for when clicking a username */
+            lvFriendList.setOnItemClickListener(this);
         }
 
         /* This will handle click inside the fragment picture */
@@ -482,6 +489,15 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
             }
         }
 
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /* the user clicked on the name or avatar of a participant */
+            Intent openDetail = new Intent(getActivity(), ProfileAndFriendsActivity.class);
+            String serializedObject = mGson.toJson(parent.getAdapter().getItem(position));
+            //Log.i("Test", serializedObject);
+            openDetail.putExtra(ProfileAndFriendsActivity.SHOW_OTHER_USER_PROFILE, serializedObject);
+            startActivityForResult(openDetail, 0);
+        }
     }
 
     /**

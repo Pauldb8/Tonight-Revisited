@@ -17,6 +17,7 @@
             android:layout_height="40dp"
             android:src="@drawable/ic_account_circle"
             android:layout_marginEnd="@dimen/paddingMedium"
+            android:layout_marginTop="@dimen/paddingSmall"
             useravatar:ua_border="true"
             useravatar:ua_border_color="#000000"
             useravatar:ua_border_width="1dp"
@@ -26,34 +27,37 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/paddingMedium">
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:text="Prénom Nom"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/primary_text"
                 android:layout_weight="1"
                 android:id="@+id/event_post_full_name"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText"
+                android:layout_marginBottom="@dimen/paddingSmall" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/event_post_message"
+                android:layout_weight="1"
+                android:layout_marginBottom="@dimen/paddingSmall"
+                android:text="This is a sample message content." />
 
             <TextView
                 android:id="@+id/event_post_datetime"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
                 android:text="Le 21 juin 2016 à 20:35"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:color="@color/colorPrimaryLightest"
                 android:layout_weight="1"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText"
+                android:textSize="@dimen/textSizeExtraSmall"
+                android:textColor="@color/secondary_text" />
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/paddingMedium"
-                android:ems="10"
-                android:id="@+id/event_post_message"
-                android:layout_weight="1"
-                android:textColor="@color/primary_text" />
         </LinearLayout>
     </LinearLayout>

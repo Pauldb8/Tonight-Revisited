@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/event_description_report"
+        android:orderInCategory="100"
+        android:title="@string/report_abuse"
+        appcompat:showAsAction="never" />
+
+    <item
+        android:id="@+id/event_description_modify"
+        android:orderInCategory="99"
+        android:title="@string/event_modify"
+        android:icon="@drawable/ic_action_edit_white"
+        appcompat:showAsAction="never"
+        />
+</menu>

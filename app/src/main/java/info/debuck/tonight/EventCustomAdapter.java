@@ -1,6 +1,7 @@
 package info.debuck.tonight;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +72,7 @@ public class EventCustomAdapter extends ArrayAdapter<TonightEvent> implements Fi
         evPrice.setText(event.getPriceFormatted());
         evDay.setText(fDateDay.format(event.getStart_date()));
         evMonth.setText(fDateMonth.format(event.getStart_date()).toUpperCase());
-        evDescription.setText(event.getDescription());
+        evDescription.setText(Html.fromHtml(event.getDescription()));
         //evHour.setText(event.getStartHour());
 
         /* Adapting icons depending on category */
