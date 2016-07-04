@@ -47,7 +47,8 @@
                 android:id="@+id/event_post_message"
                 android:layout_weight="1"
                 android:layout_marginBottom="@dimen/paddingSmall"
-                android:text="This is a sample message content." />
+                android:text="This is a sample message content."
+                android:textColor="@color/primary_text_lighter"/>
 
             <TextView
                 android:id="@+id/event_post_datetime"

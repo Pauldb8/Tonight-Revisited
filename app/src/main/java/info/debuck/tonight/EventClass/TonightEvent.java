@@ -2,10 +2,13 @@ package info.debuck.tonight.EventClass;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.Spanned;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import info.debuck.tonight.NetworkSingleton;
 
@@ -236,7 +239,28 @@ public class TonightEvent {
         return NetworkSingleton.getInstance(mContext).getGson().toJson(this);
     }
 
-    public String getDescriptionFormatted() {
-        return Html.fromHtml(getDescription()).toString();
+    public Spanned getDescriptionFormatted() {
+        return Html.fromHtml(transformURLIntoLinks(getDescription()));
+    }
+
+
+    /**
+     * This method will format the string to be appropriately formatted for html usage
+     * @param text
+     * @return
+     */
+    public String transformURLIntoLinks(String text){
+        String urlValidationRegex =
+                "(https?|ftp)://(www\\d?|[a-zA-Z0-9]+)?.[a-zA-Z0-9-]+(\\:|.)([a-zA-Z0-9.]+|(\\d+)?)([/?:].*)?";
+        Pattern p = Pattern.compile(urlValidationRegex);
+        Matcher m = p.matcher(text);
+        StringBuffer sb = new StringBuffer();
+        while(m.find()){
+            String found =m.group(0);
+            m.appendReplacement(sb, "<a href='"+found+"'>"+found+"</a>");
+        }
+        m.appendTail(sb);
+        String returned = sb.toString().replaceAll("\\n", "<br />");
+        return returned;
     }
 }

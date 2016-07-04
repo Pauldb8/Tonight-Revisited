@@ -45,7 +45,7 @@ public class NetworkSingleton {
     private UserProfile userProfile;
 
     private NetworkSingleton(Context context){
-        this.mCtx = context;
+        mCtx = context;
         mRequestQueue = getRequestQueue(); /* Assigning the queue */
         mGson = getGson(); /* Assigning the Gson */
 

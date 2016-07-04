@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -19,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 import android.widget.ViewSwitcher;
 
 import com.android.volley.Request;
@@ -36,10 +36,10 @@ import java.util.Calendar;
 
 import info.debuck.tonight.EventClass.IsSubscribedRequest;
 import info.debuck.tonight.EventClass.SubscriptionRequest;
-import info.debuck.tonight.EventClass.TonightReportDialog;
 import info.debuck.tonight.EventClass.TonightEvent;
 import info.debuck.tonight.EventClass.TonightEventForeignKeys;
 import info.debuck.tonight.EventClass.TonightEventPost;
+import info.debuck.tonight.EventClass.TonightReportDialog;
 import info.debuck.tonight.EventClass.TonightRequest;
 import info.debuck.tonight.EventClass.User;
 import info.debuck.tonight.EventClass.UserAvatar;
@@ -51,6 +51,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     private static final int TONIGHT_SUBSCRIBE = 2;
     private static final int TONIGHT_UNSUBSCRIBE = 3;
     public static String TONIGHT_INTENT_USER_DETAILS = "tonight_intent_user_details";
+
     /* Layout properties */
     private NetworkImageView evDescPicture;
     private TextView evTitle;
@@ -69,6 +70,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
     private LinearLayout llEventParticipants;
     private LinearLayout llFourthRow;
     private UserAvatar userAvatar;
+    private ShareActionProvider mShareActionProvider;
 
     /* TonightEvent properties */
     private Gson mGson;
@@ -94,9 +96,9 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         setContentView(R.layout.event_description_activity);
 
         /* Setting transparent toolbar */
-        if (((Toolbar) findViewById(R.id.toolbar)) != null) {
+        if (findViewById(R.id.toolbar) != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ((Toolbar) findViewById(R.id.toolbar)).setBackground(getDrawable(R.drawable.background_toolbar_translucent));
+                findViewById(R.id.toolbar).setBackground(getDrawable(R.drawable.background_toolbar_translucent));
             }
         }
 
@@ -174,8 +176,20 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         /* If user is creator, then show modifiy button, else don't */
         if(sessionManager.isLoggedIn() && sessionManager.getUser().getId() == event.getUser_id()) {
             getMenuInflater().inflate(R.menu.event_description_menu_author, menu);
+            // Locate MenuItem with ShareActionProvider
+            MenuItem item = menu.findItem(R.id.menu_item_share);
+
+            // Fetch and store ShareActionProvider
+            mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
         }else{
             getMenuInflater().inflate(R.menu.event_description_menu, menu);
+            // Locate MenuItem with ShareActionProvider
+            MenuItem item = menu.findItem(R.id.menu_item_share);
+
+            // Fetch and store ShareActionProvider
+            mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
         }
         return true;
     }
@@ -204,8 +218,21 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
                 //Log.i("Test", serializedObject);
                 openDetail.putExtra(MainActivity.TONIGHT_INTENT_EXTRA_DESC, serializedObject);
                 openDetail.putExtra(ManageEventActivity.TONIGHT_INTENT_EXTRA_DESC_FK, serializedObjectFK);
-                startActivity(openDetail);
+                startActivityForResult(openDetail, 3);
             }
+        }
+        else if(id == R.id.menu_item_share){
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            String myShare = getString(R.string.share_event_text1);
+            myShare = myShare + "\n \n" + event.getName();
+            myShare = myShare + "\nDate: " + event.getStartDateFormatted() + " à " + event.getStartHour();
+            myShare = myShare + "\nPrix: " + event.getPriceFormatted();
+            myShare = myShare + "\nLieu: " + eventFK.getAddress();
+            myShare = myShare + "\n \n" + getString(R.string.share_event_text2);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, myShare);
+            sendIntent.setType("text/plain");
+            startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
         }
 
         return super.onOptionsItemSelected(item);
@@ -223,6 +250,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
                         evLocation.setText(eventFK.getAddress());
                         evCategory.setText(NetworkSingleton.getInstance(getApplicationContext())
                                 .getEventCategory().getCategoryName(eventFK.getCategory()));
+                        share();
                         Log.i("EDA", "received FKeys");
                     }
                 },
@@ -252,7 +280,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         evStartDate.setText(event.getStartDateFormatted());
         evPrice.setText(event.getPriceFormatted());
         evStartTime.setText(event.getStartHour());
-        evDescription.setText(Html.fromHtml(refactorText(event.getDescription())));
+        evDescription.setText(event.getDescriptionFormatted());
 
         setParticipantView(llEventParticipants);
 
@@ -312,7 +340,11 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         if(subscribedUsers != null){
             int maxUsers = 5; /* How many partcipants are we going to display */
             /* First hide the no participants view */
-            ((TextView) findViewById(R.id.event_no_participants)).setVisibility(View.GONE);
+            View noParticipants = findViewById(R.id.event_no_participants);
+            noParticipants.setVisibility(View.GONE);
+            /* Remove all previous */
+            ((LinearLayout) findViewById(R.id.event_participant)).removeAllViews();
+            ((LinearLayout) findViewById(R.id.event_participant)).addView(noParticipants);
 
             /* We create the view that are going  to add */
             for(int i = 0; i < Math.min(subscribedUsers.length, maxUsers); i++){
@@ -344,6 +376,12 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
                 moreUsers.setTextColor(getResources().getColor(R.color.primary_text));
                 ((LinearLayout) findViewById(R.id.event_participant)).addView(moreUsers);
             }
+        }else { /* No participants */
+            /* First hide the no participants view */
+            View noParticipants = findViewById(R.id.event_no_participants);
+            noParticipants.setVisibility(View.VISIBLE);
+            ((LinearLayout) findViewById(R.id.event_participant)).removeAllViews();
+            ((LinearLayout) findViewById(R.id.event_participant)).addView(noParticipants);
         }
     }
 
@@ -363,7 +401,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
 
         switch(id){
             case R.id.subscribe:
-                if(sessionManager.isLoggedIn()){
+                if(sessionManager.isLoggedIn() && sessionManager.getUser() != null){
                     Boolean subscription_status = false;
                     String subscribeUrl = getResources().getString(R.string.subscribe_event_url);
 
@@ -380,8 +418,10 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
                             new Response.Listener<TonightRequest>() {
                                 @Override
                                 public void onResponse(TonightRequest response) {
-                                    if(response.isStatusReturn())
+                                    if(response.isStatusReturn()) {
                                         show_unsubscribe();
+                                        setParticipantView(llEventParticipants);
+                                    }
                                     else
                                         Log.e("subscribeEvent", response.getStatusMessage());
                                 }
@@ -423,8 +463,10 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
                             new Response.Listener<TonightRequest>() {
                                 @Override
                                 public void onResponse(TonightRequest response) {
-                                    if(response.isStatusReturn())
+                                    if(response.isStatusReturn()) {
                                         show_subscribe();
+                                        setParticipantView(llEventParticipants);
+                                    }
                                     else
                                         Log.e("subscribeEvent", response.getStatusMessage());
                                 }
@@ -468,6 +510,32 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
         }
     }
 
+
+    /** When we got a result back from a subsequent activity, we update the view */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        int id = event.get_ID();
+        GsonRequest<TonightEvent> getEvent = new GsonRequest<>(
+                getString(R.string.url_event_by_id) + "?event_id=" + id,
+                TonightEvent.class,
+                new Response.Listener<TonightEvent>() {
+                    @Override
+                    public void onResponse(TonightEvent response) {
+                            /* Getting the event back */
+                        event = response;
+                            /* filling the views with the event informaiton */
+                        fillDetails();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("EDA", "Did NOT receive event" + error.getMessage());
+                    }
+                },
+                this);
+        mRequestQueue.add(getEvent);
+    }
 
     /** This function hide the subscribe button and show the unsubscribe button */
     public void show_unsubscribe(){
@@ -519,7 +587,7 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
      */
     public void showWritePost(){
         /* Si on est connecté */
-        if(sessionManager.isLoggedIn() || mUser != null){
+        if(sessionManager.isLoggedIn() && mUser != null ){
             llWritePost.setVisibility(View.VISIBLE);
         }else {
             llWritePost.setVisibility(View.GONE);
@@ -531,12 +599,15 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
      * the post of this event
      */
     public void trySendPost(){
-        EditText etWritePost = ((EditText) findViewById(R.id.etWritePost));
+        final EditText etWritePost = ((EditText) findViewById(R.id.etWritePost));
         /* First let's make sure the post isn't empty */
         String post = etWritePost.getText().toString();
         if(post.isEmpty()){
             etWritePost.setError(getString(R.string.add_event_post_empty));
             etWritePost.requestFocus();
+        }else if (mUser == null){ /* not connected */
+            Toast.makeText(this, R.string.event_detail_not_auth,
+                    Toast.LENGTH_LONG).show();
         }else{
             etWritePost.setError(null);
             /* Post isn't empty, we send it to the database */
@@ -557,7 +628,11 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
                         @Override
                         public void onResponse(TonightRequest response) {
                             if (response.isStatusReturn()) { /* correctly added to the database */
-                                recreate();
+                                getPostEventToView getEventPostAsyncTask =
+                                        new getPostEventToView(getApplicationContext(), lvEventListPost,
+                                        getPostEventToView.REQUEST_PARENT_POST, event.get_ID());
+                                getEventPostAsyncTask.execute();
+                                etWritePost.setText(null);
                                 Toast.makeText(getApplicationContext(),
                                         getString(R.string.event_detail_post_added),
                                         Toast.LENGTH_LONG).show();
@@ -596,6 +671,24 @@ public class EventDescriptionActivity extends AppCompatActivity implements View.
             //Log.i("Test", serializedObject);
             openDetail.putExtra(ProfileAndFriendsActivity.SHOW_OTHER_USER_PROFILE, serializedObject);
             startActivityForResult(openDetail, 0);
+        }
+    }
+
+    // Call to update the share intent
+    private void share() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        String myShare = getString(R.string.share_event_text1);
+        myShare = myShare + "\n \n" + event.getName();
+        myShare = myShare + "\nDate: " + event.getStartDateFormatted() + " à " + event.getStartHour();
+        myShare = myShare + "\nPrix: " + event.getPriceFormatted();
+        myShare = myShare + "\nLieu: " + eventFK.getAddress();
+        myShare = myShare + "\n \n" + getString(R.string.share_event_text2);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, myShare);
+        sendIntent.setType("text/plain");
+        //startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(sendIntent);
         }
     }
 }

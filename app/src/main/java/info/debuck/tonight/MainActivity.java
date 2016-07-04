@@ -29,6 +29,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.google.gson.Gson;
 
 import info.debuck.tonight.EventClass.TonightEvent;
+import info.debuck.tonight.EventClass.TonightFilterEventsDialog;
 import info.debuck.tonight.EventClass.User;
 import info.debuck.tonight.EventClass.UserAvatar;
 import info.debuck.tonight.Tools.MaterialSpinnerAdapter;
@@ -117,8 +118,9 @@ public class MainActivity extends AppCompatActivity
         mainListView.setOnItemClickListener(this);
         mainListView.setEmptyView(findViewById(R.id.empty_view));
         mainLoader = (ProgressBar) findViewById(R.id.loading);
+
         getEventToView getEventAsyncTask = new getEventToView(this, mainListView, mainLoader,
-                getEventToView.REQUEST_ALL_EVENT);
+                getEventToView.REQUEST_EVENT_FROM_CITY, 100);
         getEventAsyncTask.execute();
 
     }
@@ -196,12 +198,13 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(!TextUtils.isEmpty(newText)) {
-                    ((EventCustomAdapter) mainListView.getAdapter()).getFilter().filter(newText.toString());
-                }else {
-                    ((EventCustomAdapter) mainListView.getAdapter()).getFilter().filter(newText.toString());
+                if(mainListView.getAdapter() != null) {
+                    if (!TextUtils.isEmpty(newText)) {
+                        ((EventCustomAdapter) mainListView.getAdapter()).getFilter().filter(newText.toString());
+                    } else {
+                        ((EventCustomAdapter) mainListView.getAdapter()).getFilter().filter(newText.toString());
+                    }
                 }
-
                 return true;
             }
         });
@@ -216,8 +219,13 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //Filter
         if (id == R.id.action_settings) {
+            TonightFilterEventsDialog dialog = new TonightFilterEventsDialog();
+            Bundle args = new Bundle();
+            //args.putString(ManageEventActivity.TONIGHT_INTENT_EXTRA_EVENT, mGson.toJson(mEvent));
+            //dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "TonightFilterEventsDialog");
             return true;
         }
         if(id == R.id.search){

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -36,7 +35,7 @@ public class ListUsersAdapter extends ArrayAdapter<User> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        mUser = (User) getItem(position);
+        mUser = getItem(position);
 
         View v = convertView;
 
@@ -54,9 +53,9 @@ public class ListUsersAdapter extends ArrayAdapter<User> {
 
         /* User friend status is pending, we show it as is */
         if(mUser.getFriend_status() == User.FRIENDSHIP_STATUS_PENDING){
-            ((LinearLayout) v.findViewById(R.id.mainLine)).setBackgroundColor(
+            v.findViewById(R.id.mainLine).setBackgroundColor(
                     mContext.getResources().getColor(R.color.colorAccentLight));
-            ((TextView) v.findViewById(R.id.user_pending_friend_request)).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.user_pending_friend_request).setVisibility(View.VISIBLE);
         }
 
         return v;

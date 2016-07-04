@@ -35,6 +35,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import info.debuck.tonight.EventClass.TonightChangeFriendStatusDialog;
 import info.debuck.tonight.EventClass.TonightRequest;
 import info.debuck.tonight.EventClass.User;
 import info.debuck.tonight.EventClass.UserAvatar;
@@ -44,6 +45,7 @@ import info.debuck.tonight.Tools.GsonRequest;
 public class ProfileAndFriendsActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String SHOW_OTHER_USER_PROFILE = "tonight_show_other_user_profile";
+    public static final String TONIGHT_INTENT_EXTRA_USER = "tonight_intent_user_extra";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -118,46 +120,50 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
         fab.setOnClickListener(this);
 
         if(!isMyProfile){
-             /* we get the friendship status */
-            GsonRequest<TonightRequest> getFriendshipStatus = new GsonRequest<TonightRequest>(
-                    getString(R.string.url_get_friendship_status) + "?user_id=" +
-                            NetworkSingleton.getInstance(this).getConnectedUSer().getId() +
-                            "&friend_id=" + mUser.getId(),
-                    TonightRequest.class,
-                    new Response.Listener<TonightRequest>() {
-                        @Override
-                        public void onResponse(TonightRequest response) {
-                            friendshiptStatus = response.getStatusCode();
+            if(NetworkSingleton.getInstance(this).getConnectedUSer() != null) { /* connected user */
+                 /* we get the friendship status */
+                GsonRequest<TonightRequest> getFriendshipStatus = new GsonRequest<TonightRequest>(
+                        getString(R.string.url_get_friendship_status) + "?user_id=" +
+                                NetworkSingleton.getInstance(this).getConnectedUSer().getId() +
+                                "&friend_id=" + mUser.getId(),
+                        TonightRequest.class,
+                        new Response.Listener<TonightRequest>() {
+                            @Override
+                            public void onResponse(TonightRequest response) {
+                                friendshiptStatus = response.getStatusCode();
 
-                            tvProfileStatus = (TextView) ((Fragment)mSectionsPagerAdapter.
-                                            instantiateItem(mViewPager, mViewPager.getCurrentItem()))
-                                            .getView().findViewById(R.id.profile_profile);
+                                tvProfileStatus = (TextView) ((Fragment) mSectionsPagerAdapter.
+                                        instantiateItem(mViewPager, mViewPager.getCurrentItem()))
+                                        .getView().findViewById(R.id.profile_profile);
 
-                            if(friendshiptStatus == User.FRIENDSHIP_STATUS_FRIEND) {
-                                tvProfileStatus.setText(R.string.profile_is_my_friend);
-                                fab.hide();
-                            }
-                            else if(friendshiptStatus == User.FRIENDSHIP_STATUS_NOT_FRIEND) {
-                                tvProfileStatus.setText(R.string.profile_is_not_my_friend);
-                                fab.show();
-                            }
-                            else if(friendshiptStatus == User.FRIENDSHIP_STATUS_PENDING) {
-                                tvProfileStatus.setText(R.string.profile_friend_request_sent);
-                                fab.hide();
-                            }
+                                if (friendshiptStatus == User.FRIENDSHIP_STATUS_FRIEND) {
+                                    tvProfileStatus.setText(R.string.profile_is_my_friend);
+                                    fab.hide();
+                                } else if (friendshiptStatus == User.FRIENDSHIP_STATUS_NOT_FRIEND) {
+                                    tvProfileStatus.setText(R.string.profile_is_not_my_friend);
+                                    fab.show();
+                                } else if (friendshiptStatus == User.FRIENDSHIP_STATUS_PENDING) {
+                                    tvProfileStatus.setText(R.string.profile_friend_request_sent);
+                                    fab.hide();
+                                }
 
-                            tvProfileStatus.setVisibility(View.VISIBLE);
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("PAFA", "Error while retrieving friendship status: "
-                                    + error.getMessage());
-                        }
-                    },
-                    this);
-            mRequestQueue.add(getFriendshipStatus);
+                                tvProfileStatus.setVisibility(View.VISIBLE);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("PAFA", "Error while retrieving friendship status: "
+                                        + error.getMessage());
+                            }
+                        },
+                        this);
+                mRequestQueue.add(getFriendshipStatus);
+            }
+            else { /* Not connected user */
+                friendshiptStatus = 3;
+                //fab.hide();
+            }
         }
         else
             fab.hide(); /*Hidden on default */
@@ -234,54 +240,66 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
 
         if(id == R.id.fab){ /* we clicked the fab button, what do we want ? */
             if(!isMyProfile) { /* We are seeing another user's profile */
-                if(friendshiptStatus == User.FRIENDSHIP_STATUS_NOT_FRIEND) { /* We are not already friends */
-                     /* we add as friend */
-                    GsonRequest<TonightRequest> addFriend = new GsonRequest<TonightRequest>(
-                            getString(R.string.url_add_friend) + "?user_id=" +
-                                    NetworkSingleton.getInstance(this).getConnectedUSer().getId() +
-                                    "&friend_id=" + mUser.getId(),
-                            TonightRequest.class,
-                            new Response.Listener<TonightRequest>() {
-                                @Override
-                                public void onResponse(TonightRequest response) {
-                                    if(response.isStatusReturn()){ /* Friend request correctly sent */
-                                        tvProfileStatus.setText(getString(R.string.profile_friend_request_sent));
-                                        Toast.makeText(getApplicationContext(),
-                                                getString(R.string.profile_friend_request_sent_correctly),
-                                                Toast.LENGTH_LONG).show();
-                                        friendshiptStatus = User.FRIENDSHIP_STATUS_PENDING;
-                                        fab.hide();
-                                    }else {
+                if(friendshiptStatus != User.FRIENDSHIP_STATUS_FRIEND && mUser != null) { /* We are not already friends */
+                    if(NetworkSingleton.getInstance(this).getConnectedUSer() != null) {
+                         /* we add as friend */
+                        GsonRequest<TonightRequest> addFriend = new GsonRequest<TonightRequest>(
+                                getString(R.string.url_add_friend) + "?user_id=" +
+                                        NetworkSingleton.getInstance(this).getConnectedUSer().getId() +
+                                        "&friend_id=" + mUser.getId(),
+                                TonightRequest.class,
+                                new Response.Listener<TonightRequest>() {
+                                    @Override
+                                    public void onResponse(TonightRequest response) {
+                                        if (response.isStatusReturn()) { /* Friend request correctly sent */
+                                            tvProfileStatus.setText(getString(R.string.profile_friend_request_sent));
+                                            Toast.makeText(getApplicationContext(),
+                                                    getString(R.string.profile_friend_request_sent_correctly),
+                                                    Toast.LENGTH_LONG).show();
+                                            friendshiptStatus = User.FRIENDSHIP_STATUS_PENDING;
+                                            fab.hide();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(),
+                                                    getString(R.string.profile_friend_request_send_error),
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+
+                                        tvProfileStatus.setVisibility(View.VISIBLE);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.e("PAFA", "Error while retrieving friendship status: "
+                                                + error.getMessage());
                                         Toast.makeText(getApplicationContext(),
                                                 getString(R.string.profile_friend_request_send_error),
                                                 Toast.LENGTH_LONG).show();
                                     }
-
-                                    tvProfileStatus.setVisibility(View.VISIBLE);
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Log.e("PAFA", "Error while retrieving friendship status: "
-                                            + error.getMessage());
-                                    Toast.makeText(getApplicationContext(),
-                                            getString(R.string.profile_friend_request_send_error),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            },
-                            this);
-                    mRequestQueue.add(addFriend);
+                                },
+                                this);
+                        mRequestQueue.add(addFriend);
+                    }
+                    else { /* not connected */
+                        Toast.makeText(this, getString(R.string.event_detail_not_auth),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
         }
     }
 
+
+    /* update view */
+    public void updateViews() {
+        recreate();
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+    public static class PlaceholderFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -369,7 +387,7 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
         /**
          * This methods places the information from the user in their corresponding position on the view
          */
-        private void setupViews(View rootView, boolean isMyProfile) {
+        public void setupViews(View rootView, boolean isMyProfile) {
             tvProfileName = (TextView) rootView.findViewById(R.id.profile_name);
             tvProfileEmail = (TextView) rootView.findViewById(R.id.profile_email);
             tvProfileProfile = (TextView) rootView.findViewById(R.id.profile_profile);
@@ -410,7 +428,13 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
             lvFriendList = (ListView) rootView.findViewById(R.id.list_user_friends);
             lvEmptyList = (LinearLayout) rootView.findViewById(R.id.empty_friend_view);
 
-            String request_friends_url = getString(R.string.url_user_friends);
+            String request_friends_url;
+            if(isMyProfile) {
+                request_friends_url = getString(R.string.url_user_friends);
+            }
+            else{
+                request_friends_url = getString(R.string.url_other_user_friends);
+            }
             request_friends_url += "?user_id=" + mUser.getId();
 
             /* GsonRequest to get the friend list and set them in the adapter view */
@@ -441,6 +465,7 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
 
             /* OnItemClickListener for when clicking a username */
             lvFriendList.setOnItemClickListener(this);
+            lvFriendList.setOnItemLongClickListener(this);
         }
 
         /* This will handle click inside the fragment picture */
@@ -497,6 +522,26 @@ public class ProfileAndFriendsActivity extends AppCompatActivity implements View
             //Log.i("Test", serializedObject);
             openDetail.putExtra(ProfileAndFriendsActivity.SHOW_OTHER_USER_PROFILE, serializedObject);
             startActivityForResult(openDetail, 0);
+        }
+
+
+        /**
+         * We want to add or remove from friends
+         * @param parent
+         * @param view
+         * @param position
+         * @param id
+         * @return
+         */
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            User userClicked = (User) parent.getAdapter().getItem(position);
+            TonightChangeFriendStatusDialog dialog = new TonightChangeFriendStatusDialog();
+            Bundle args3 = new Bundle();
+            args3.putString(ProfileAndFriendsActivity.TONIGHT_INTENT_EXTRA_USER, mGson.toJson(userClicked));
+            dialog.setArguments(args3);
+            dialog.show(getActivity().getSupportFragmentManager(), "PAFA");
+            return true;
         }
     }
 

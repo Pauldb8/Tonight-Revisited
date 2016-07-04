@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/dialog_filter_event_title"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/paddingSmall"/>
+
+    <!-- information -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/dialog_filter_event_subtitle"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/paddingBig"/>
+
+    <!-- price -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/dialog_filter_event_by_price"
+            android:paddingLeft="@dimen/paddingBig"
+            android:paddingTop="@dimen/paddingBig"
+            android:paddingRight="@dimen/paddingBig"
+            android:paddingBottom="@dimen/paddingSmall" />
+
+        <TextView
+            android:id="@+id/filter_chosen_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:paddingLeft="@dimen/paddingBig"
+            android:paddingTop="@dimen/paddingBig"
+            android:paddingRight="@dimen/paddingBig"
+            android:paddingBottom="@dimen/paddingSmall" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/paddingBig"
+        android:layout_marginStart="@dimen/paddingBig">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_filter_event_min_price" />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarPrice"
+            android:max="100"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_filter_event_max_price" />
+
+    </LinearLayout>
+
+
+
+    <!-- Distance -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/dialog_filter_event_by_distance"
+            android:paddingLeft="@dimen/paddingBig"
+            android:paddingTop="@dimen/paddingBig"
+            android:paddingRight="@dimen/paddingBig"
+            android:paddingBottom="@dimen/paddingSmall"/>
+        <TextView
+            android:id="@+id/filter_chosen_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="0"
+            android:paddingLeft="@dimen/paddingBig"
+            android:paddingTop="@dimen/paddingBig"
+            android:paddingRight="@dimen/paddingBig"
+            android:paddingBottom="@dimen/paddingSmall" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/paddingBig"
+        android:layout_marginStart="@dimen/paddingBig"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_filter_event_min_price" />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarDistance"
+            android:max="100"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_filter_event_max_price" />
+    </LinearLayout>
+
+    <!-- Category -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/dialog_filter_event_by_category"
+        android:paddingLeft="@dimen/paddingBig"
+        android:paddingTop="@dimen/paddingBig"
+        android:paddingRight="@dimen/paddingBig"
+        android:paddingBottom="@dimen/paddingSmall"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:focusable="false"
+        android:entries="@array/category_event_all"
+        android:layout_gravity="center_horizontal" />
+
+    <!-- Category -->
+    <TextView
+        android:id="@+id/button_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/dialog_filter_event_by_default"
+        android:textColor="@color/colorAccent"
+        android:paddingLeft="@dimen/paddingBig"
+        android:paddingTop="@dimen/paddingBig"
+        android:paddingRight="@dimen/paddingBig"
+        android:paddingBottom="@dimen/paddingSmall"/>
+
+</LinearLayout>

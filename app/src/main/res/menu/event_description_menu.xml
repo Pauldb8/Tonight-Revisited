@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_item_share"
+        appcompat:showAsAction="ifRoom"
+        android:icon="@drawable/ic_share"
+        android:title="@string/share"
+        android:actionProviderClass=
+            "android.widget.ShareActionProvider" />
+
     <item
         android:id="@+id/event_description_report"
         android:orderInCategory="100"

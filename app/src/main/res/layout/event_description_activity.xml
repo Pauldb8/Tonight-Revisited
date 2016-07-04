@@ -308,7 +308,6 @@
                 android:layout_below="@+id/FourthRow"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/FifthRow"
-                android:layout_marginBottom="10dp"
                 android:background="@color/white">
 
                 <TextView
@@ -333,19 +332,65 @@
                     android:textSize="15sp"
                     android:padding="10dp" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/FifthRow"
+                android:background="@color/white"
+                android:layout_marginBottom="@dimen/marginSmall">
+
+                <ViewSwitcher
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:id="@+id/viewSwitcher"
+                    android:inAnimation="@android:anim/slide_in_left"
+                    android:outAnimation="@android:anim/slide_out_right">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/event_detail_subscribe"
+                        android:id="@+id/subscribe"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@color/colorAccent"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="20dp"
+                        android:paddingTop="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/event_detail_unsubscribe"
+                        android:id="@+id/unsubscribe"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@color/red_accent"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="20dp"
+                        android:visibility="gone"/>
+
+                </ViewSwitcher>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray"
                     android:id="@+id/lineSeparator3"/>
-
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/FifthRow"
+                android:layout_below="@+id/footer"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/SixthRow"
                 android:paddingBottom="@dimen/paddingSmall"
@@ -451,56 +496,6 @@
                 android:divider="#00000000"
                 android:dividerHeight="0dp"
                 />
-
-            <RelativeLayout
-                android:id="@+id/footer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="false"
-                android:gravity="center"
-                android:elevation="@dimen/elevationMedium"
-                android:background="@color/white"
-                android:layout_alignParentEnd="false"
-                android:layout_alignParentStart="false"
-                android:layout_below="@+id/event_post_list">
-
-                <ViewSwitcher
-                    android:layout_height="wrap_content"
-                    android:layout_width="fill_parent"
-                    android:id="@+id/viewSwitcher"
-                    android:inAnimation="@android:anim/slide_in_left"
-                    android:outAnimation="@android:anim/slide_out_right">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/event_detail_subscribe"
-                        android:id="@+id/subscribe"
-                        android:layout_gravity="center_horizontal"
-                        android:textColor="@color/colorAccent"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="20dp"
-                        android:paddingTop="20dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/event_detail_unsubscribe"
-                        android:id="@+id/unsubscribe"
-                        android:layout_gravity="center_horizontal"
-                        android:textColor="@color/red_accent"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="20dp"
-                        android:visibility="gone"/>
-
-                </ViewSwitcher>
-
-            </RelativeLayout>
 
             <!-- This view will be dynamically changed to add the post for the event -->
 

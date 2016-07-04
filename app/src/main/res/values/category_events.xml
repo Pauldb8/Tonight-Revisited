@@ -2,7 +2,7 @@
 <resources>
 <!-- Spinner pour create event, defaults -->
 <string-array name="category_event">
-    <item>Culturel</item>
+    <item>Art / Culture</item>
     <item>Musique</item>
     <item>Atelier</item>
     <item>Soirée</item>
@@ -11,4 +11,16 @@
     <item>Réunion</item>
     <item>Autre</item>
 </string-array>
+    <!-- Same with all events option item added -->
+    <string-array name="category_event_all">
+        <item>Toutes les catégories</item>
+        <item>Art / Culture</item>
+        <item>Musique</item>
+        <item>Atelier</item>
+        <item>Soirée</item>
+        <item>Bar / Restaurant</item>
+        <item>Festival</item>
+        <item>Réunion</item>
+        <item>Autre</item>
+    </string-array>
 </resources>

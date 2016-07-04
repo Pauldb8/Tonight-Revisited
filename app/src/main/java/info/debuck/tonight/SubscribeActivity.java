@@ -60,8 +60,8 @@ public class SubscribeActivity extends AppCompatActivity{
         tvEmail = (EditText) findViewById(R.id.subscribe_tv_email);
         tvPassword = (EditText) findViewById(R.id.subscribe_tv_password);
 
-        mProgressView = (ProgressBar) findViewById(R.id.login_progress);
-        mLoginFormView = (LinearLayout) findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+        mLoginFormView = findViewById(R.id.login_form);
 
         btRegister = (Button) findViewById(R.id.subscribe_button);
         btRegister.setOnClickListener(new View.OnClickListener() {
@@ -269,7 +269,7 @@ public class SubscribeActivity extends AppCompatActivity{
                 }
             }, getApplicationContext());
 
-        /* Filling resquest queue */;
+        /* Filling resquest queue */
             requestQueue.add(myRequest);
 
             return true;

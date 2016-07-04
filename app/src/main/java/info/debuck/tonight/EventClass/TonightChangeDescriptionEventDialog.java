@@ -58,7 +58,7 @@ public class TonightChangeDescriptionEventDialog extends DialogFragment{
         View view = inflater.inflate(R.layout.activity_event_change_description_dialog, null);
 
         /* Setting views */
-        change = (EditText) view.findViewById(R.id.evTitle);
+        change = (EditText) view.findViewById(R.id.evDescription);
         change.setText(mEvent.getDescription());
 
         builder.setView(view)

@@ -6,17 +6,17 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Se connecter</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Mot de passe</string>
     <string name="action_sign_in">Se connecter</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="action_sign_in_short">Se connecter</string>
+    <string name="error_invalid_email">Cette adresse email est incorrecte</string>
     <string name="error_invalid_password">Le mot de passe est trop court (min 8 car.)</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_incorrect_password">Mot de passe incorrect</string>
+    <string name="error_field_required">Vous devez remplir ce champ</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -24,10 +24,10 @@
     <string name="event_detail_unsubscribe">Se désinscrire</string>
     <string name="title_activity_description">Informations</string>
     <string name="drawer_connect">Se connecter</string>
-    <string name="prompt_name">First Name</string>
+    <string name="prompt_name">Prénom</string>
     <string name="prompt_last_name">Nom</string>
     <string name="auth_url">http://debuck.info/tonight/authenticate.php</string>
-    <string name="title_activity_login2">Sign in</string>
+    <string name="title_activity_login2">Connexion</string>
     <string name="auth_success">Connexion réussie.</string>
     <string name="drawer_disconnect">Se déconnecter</string>
     <string name="title_activity_profile">Mon profil</string>
@@ -54,14 +54,14 @@
     <string name="subscribe_activity_label">S\'inscrire</string>
     <string name="subscribe_subtitle">\"Gardez tous les évènements autour de vous à portée de main\"
     </string>
-    <string name="subscribe_instruction">Remplissez les champs ci-dessous.Vous pourrez dès lors créer
+    <string name="subscribe_instruction">Remplissez les champs ci-dessous. Vous pourrez dès lors créer
         vos propres évènements, avoir une liste personnalisée à vos envies, voir ce que font vos amis
         et bien plus !</string>
     <string name="prompt_firstName">Prénom</string>
     <string name="subscribe_action_register">S\'inscrire</string>
-    <string name="subscribe_error_empty">Ce champs ne peut pas être vide.</string>
+    <string name="subscribe_error_empty">Ce champ ne peut pas être vide.</string>
     <string name="subscribe_url">http://debuck.info/tonight/addUser.php</string>
-    <string name="auth_subscribe_success">Votre compte a été crée, vous êtes à présent connecté.</string>
+    <string name="auth_subscribe_success">Votre compte a été créé, vous êtes à présent connecté.</string>
     <string name="isLocationRightURL">http://debuck.info/tonight/isLocationRight.php</string>
     <string name="add_event_error_location">Cette ville n\'est pas autorisée pour le moment, veuillez changer d\'adresse.</string>
     <string name="add_event_error_network">Il y a eu un problème avec la connexion au serveur.</string>
@@ -69,14 +69,14 @@
     <string name="uploadEventURL">http://debuck.info/tonight/addEvent.php</string>
     <string name="add_event_error_fill_all">Veuillez remplir tous les champs.</string>
     <string name="subscribe_event_url">http://debuck.info/tonight/subscribe.php</string>
-    <string name="event_detail_error_network">Une erreur est survenu lors de la connexion réseau.</string>
+    <string name="event_detail_error_network">Une erreur est survenue lors de la connexion réseau.</string>
     <string name="event_detail_not_auth">Veuillez vous connecter pour continuer.</string>
     <string name="is_subscribe_event_url">http://debuck.info/tonight/isSubscribed.php</string>
     <string name="add_event_illimited_people">Participants illimités</string>
     <string name="subscribed_event_activity_label">Mes inscriptions</string>
     <string name="menu_drawer_events_created">Mes créations</string>
-    <string name="created_event_activity_label">Évènements que j\'ai crées</string>
-    <string name="title_activity_profile_and_friends">Information du compte</string>
+    <string name="created_event_activity_label">Mes créations</string>
+    <string name="title_activity_profile_and_friends">Informations du compte</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="profile_tab_profile">Profil</string>
     <string name="profile_tab_friends">Amis</string>
@@ -90,7 +90,7 @@
     <string name="event_category_festival">Festival</string>
     <string name="event_category_meeting">Réunion</string>
     <string name="event_category_other">Autre</string>
-    <string name="login_instruction">Entrez vos information de connexion.</string>
+    <string name="login_instruction">Entrez vos informations de connexion.</string>
     <string name="register_user_email_taken">Cette adresse email est déjà utilisée.</string>
     <string name="add_event_created">Votre évènement a été créé.</string>
     <string name="add_event_not_created">Votre évènement n\'a pas pu être créé.</string>
@@ -163,8 +163,8 @@
     <string name="dialog_change_status_subtitle">Veuillez choisir le nouveau statut pour l\'évènement. Attention tout changement est définitif.</string>
     <string name="dialog_change_status_button_confirm">Confirmer</string>
     <string name="tonight_status_change_confirmed">Le statut a été définitivement changé.</string>
-    <string name="change_status_close_info">Lorsque vous fermez un évènement il n\'apparait plus dans la liste d\'évènements disponibles, et les inscriptions sont fermées.</string>
-    <string name="change_status_cancel_info">Lorsque vous annulez un évènement celui-ci disparait de la liste d\'évènements disponibles. Les participants inscrits sont désinscrits et prévenus de l\'annulation.</string>
+    <string name="change_status_close_info">Lorsque vous fermez un évènement, il n\'apparait plus dans la liste d\'évènements disponibles, et les inscriptions sont fermées.</string>
+    <string name="change_status_cancel_info">Lorsque vous annulez un évènement, celui-ci disparait de la liste d\'évènements disponibles. Les participants inscrits sont désinscrits et prévenus de l\'annulation.</string>
     <string name="updateEventURL">http://debuck.info/tonight/editEvent.php</string>
     <string name="edit_event_start_time">Heure de début:</string>
     <string name="edit_event_end_time">Heure de fin:</string>
@@ -187,4 +187,26 @@
     <string name="dialog_change_event_location_subtitle">Veuillez choisir le nouveau lieu. Seules les villes autorisées sont acceptées pour le moment.</string>
     <string name="dialog_change_event_description_title">Changer la description</string>
     <string name="dialog_change_event_description_subtitle">Veuillez écrire la nouvelle description de l\'évènement.</string>
+    <string name="action_filter">Filtrer</string>
+    <string name="url_other_user_friends">http://debuck.info/tonight/getOtherUserFriends.php</string>
+    <string name="dialog_change_friend_accept">Accepter la demande</string>
+    <string name="dialog_change_friend_refuse">Refuser la demande</string>
+    <string name="dialog_change_friend_remove">Enlever de mes amis</string>
+    <string name="url_change_friendship">http://debuck.info/tonight/changeFriendshipStatus.php</string>
+    <string name="dialog_change_friend_accepted">Vous êtes maintenant amis.</string>
+    <string name="dialog_friend_refused">Demande d\'amitiée refusée</string>
+    <string name="dialog_filter_event_title">Filtrer les évènements</string>
+    <string name="dialog_filter_event_subtitle">Vous pouvez choisir quels évènements afficher en modifiant les options ci-dessous.</string>
+    <string name="dialog_filter_event_by_price">Prix (€):</string>
+    <string name="dialog_filter_event_by_distance">Distance (km):</string>
+    <string name="dialog_filter_event_by_category">Catégorie:</string>
+    <string name="dialog_filter_event_by_default">Remettre par défaut</string>
+    <string name="dialog_filter_event_min_price">0</string>
+    <string name="dialog_filter_event_max_price">100+</string>
+    <string name="dialog_filter_updated">Vos préférences ont été mises à jour.</string>
+    <string name="share">Partager</string>
+    <string name="share_event_text1">Je suis intéressé par un évènement, jette un oeil!</string>
+    <string name="share_event_text2">Tu peux retrouver cet évènement et plein d\'autres sur l\'application Tonight via le Play Store :).</string>
+    <string name="send_to">Envoyer à</string>
+    <string name="manage_event_edit_event">Modifier l\'évènement</string>
 </resources>

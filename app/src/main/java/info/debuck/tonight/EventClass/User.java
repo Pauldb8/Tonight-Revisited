@@ -12,8 +12,8 @@ public class User {
     public static int FRIENDSHIP_STATUS_PENDING = 0;
     public static int FRIENDSHIP_STATUS_MYSELF = 2;
     public static int FRIENDSHIP_STATUS_FRIEND = 1;
-    public static int FRIENDSHIP_STATUS_BLOCKED = 3;
-    public static int FRIENDSHIP_STATUS_NOT_FRIEND = 4;
+    public static int FRIENDSHIP_STATUS_BLOCKED = 4;
+    public static int FRIENDSHIP_STATUS_NOT_FRIEND = 3;
 
 
 

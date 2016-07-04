@@ -1,6 +1,7 @@
 package info.debuck.tonight;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import info.debuck.tonight.EventClass.TonightEvent;
+import info.debuck.tonight.EventClass.TonightFilterEventsDialog;
 import info.debuck.tonight.Tools.GsonRequest;
 
 /**
@@ -30,6 +32,11 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
     public final static int REQUEST_CREATED_EVENT = 2;
     public final static int REQUEST_SUBSCRIBED_EVENT = 3;
     public final static int REQUEST_EVENT_FROM_CITY = 4;
+    private final SharedPreferences pref;
+    private final SharedPreferences.Editor editor;
+    private int pref_distance;
+    private int pref_price;
+    private int pref_category;
 
     /* Necessary variables */
     private ArrayList<TonightEvent> eventArray;
@@ -41,12 +48,22 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
     private Context mContext;
     private JSONObject JSONResponse;
     private int cities_id;
+    int PRIVATE_MODE = 0;
 
     public getEventToView(Context context, ListView myView, ProgressBar loader, int request){
         this.mContext = context;
         this.mView = myView;
         this.mLoader = loader;
         this.mRequest = request;
+        /* Getting user prefs */
+        pref = mContext.getSharedPreferences(TonightFilterEventsDialog.PREF_NAME, PRIVATE_MODE);
+        editor = pref.edit();
+        pref_distance = pref.getInt(TonightFilterEventsDialog.PREF_DISTANCE,
+                TonightFilterEventsDialog.TONIGHT_DEFAULT_DISTANCE);
+        pref_price = pref.getInt(TonightFilterEventsDialog.PREF_PRICE,
+                TonightFilterEventsDialog.TONIGHT_DEFAULT_PRICE);
+        pref_category = pref.getInt(TonightFilterEventsDialog.PREF_CATEGORY,
+                TonightFilterEventsDialog.TONIGHT_DEFAULT_CATEGORY);
     }
 
     /* This constructor handles the city */
@@ -81,7 +98,10 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
                 break;
             case REQUEST_EVENT_FROM_CITY:
                 finalRequestURL += "tonight/getEventFromCity.php?cities_id="
-                        + this.cities_id;
+                        + this.cities_id
+                        + "&price=" + pref_price
+                        + "&distance=" + pref_distance
+                        + "&category=" + pref_category;
             default:
                 finalRequestURL += "tonight/getEvents.php";
                 break;
@@ -123,7 +143,7 @@ public class getEventToView extends AsyncTask<Object, Void, Void>{
             }
         }, mContext);
 
-        /* Filling resquest queue */;
+        /* Filling resquest queue */
         requestQueue.add(myRequest);
 
         return null;

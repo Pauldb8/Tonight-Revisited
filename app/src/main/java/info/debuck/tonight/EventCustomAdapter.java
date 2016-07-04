@@ -42,7 +42,7 @@ public class EventCustomAdapter extends ArrayAdapter<TonightEvent> implements Fi
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        TonightEvent event = (TonightEvent) getItem(position);
+        TonightEvent event = getItem(position);
 
         View v = convertView;
 

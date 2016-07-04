@@ -220,7 +220,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Change event information"
+                        android:text="@string/manage_event_edit_event"
                         android:id="@+id/evInfo"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/primary_text" />

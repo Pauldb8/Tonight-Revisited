@@ -347,7 +347,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }, getApplicationContext());
 
-        /* Filling resquest queue */;
+        /* Filling resquest queue */
             requestQueue.add(myRequest);
 
             /* We wait for the request to have taken place */

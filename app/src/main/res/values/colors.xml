@@ -10,10 +10,11 @@
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#161616</color>
     <color name="colorPrimaryLightest">#CFD8DC</color>
-    <color name="colorAccent">#5c6bc0</color>
+    <color name="colorAccent">#78909c</color>
     <color name="colorAccentLight">#ffdabd</color>
     <color name="red_accent">#96000E</color>
     <color name="primary_text">#212121</color>
+    <color name="primary_text_lighter">#414141</color>
     <color name="secondary_text">#9E9E9E</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>

@@ -80,7 +80,7 @@ public class RegisterUserTask extends AsyncTask {
             }
         }, mContext);
 
-        /* Filling resquest queue */;
+        /* Filling resquest queue */
         requestQueue.add(myRequest);
 
         return null;

@@ -16,7 +16,19 @@ package info.debuck.tonight.Tools;
  *  limitations under the License.
  */
 
+import android.content.Context;
+import android.graphics.Typeface;
+import android.text.style.CharacterStyle;
+import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
@@ -26,20 +38,8 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
-import android.content.Context;
-import android.graphics.Typeface;
-import android.text.style.CharacterStyle;
-import android.text.style.StyleSpan;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -109,7 +109,11 @@ public class PlaceAutoCompleteAdapter
      */
     @Override
     public AutocompletePrediction getItem(int position) {
-        return mResultList.get(position);
+        if(mResultList.size() > position)
+            return mResultList.get(position);
+        else {
+                return null;
+        }
     }
 
     @Override

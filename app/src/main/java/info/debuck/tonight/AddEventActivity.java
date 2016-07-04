@@ -290,7 +290,7 @@ public class AddEventActivity extends ActionBarActivity implements View.OnClickL
 
         //If we had already taken a picture, then we show it
         if(savedInstanceState != null){
-            pictureTaken = (Bitmap) savedInstanceState.getParcelable("pictureTaken");
+            pictureTaken = savedInstanceState.getParcelable("pictureTaken");
             if(pictureTaken != null)
                 alternateTakeOrSeePicture("see");
             else
